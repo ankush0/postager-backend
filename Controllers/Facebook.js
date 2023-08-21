@@ -8,7 +8,9 @@ return new Promise((resolve,rejects)=>{
 user.findById(req.body.userid,function(err,result){
 resolve(result)
 rejects(err);
-})    
+})
+
+
 })
 
 
