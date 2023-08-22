@@ -59,6 +59,50 @@ res.send({status: 0, msg: "Internal Server error check your credential and try a
 
 }
 }
+
+exports.removeApikeyPintrest = async (req, res) => {
+    try{
+        if (req.body._id && req.body._id.match(/^[0-9a-fA-F]{24}$/)) {
+    
+            let map = new Map();
+            map.set("","");      
+           Brand.updateOne({
+                "_id": req.body._id
+            }, {
+                'ptcredential':"",
+                'ptpicture':""
+            }, function (error, response) {
+                console.log(response);
+                if (error) {
+                    console.log(error);
+                    res.json({status: 0, msg: "Internal Server Error check your credentials"})
+                } else {
+                    if (response.nModified == 1) {
+    
+                        res.json({Status: 1, msg: "updated succesfully"})
+    
+                    } else {
+                        res.json({Status: 0, msg: "Not Updated/Dont tyr to Overwrite"})
+    
+                    }
+                }
+                console.log(error);
+    
+            });
+    
+        } else {
+    
+            res.json({status: 0, msg: "Send all Necessary Fields"})
+        }
+    }
+    catch(err){
+    console.log(err);
+    res.send({status: 0, msg: "Internal Server error check your credential and try again"});
+    
+    }
+    }
+
+
 exports.Getallcomments=async(req,res)=>{
     
 var access_token=req.body.access_token;

@@ -55,6 +55,8 @@ router.post('/AddApikeysandTokenFacebook', Facebook.AddApikeysandTokenFacebook);
 router.post('/AddApikeysandTokenInstagram', Instagram.AddApikeysandTokenInstagram);
 router.post('/AddApikeysandTokenPintrest', Pinterest.AddApikeysandTokenPintrest);
 
+router.post('/removeApikeyPintrest', Pinterest.removeApikeyPintrest);
+
 router.post('/GetallComment', Facebook.Getallcomments)
 router.get('/Addnewuser')
 // router.post('ReplyToComment',Facebook)
