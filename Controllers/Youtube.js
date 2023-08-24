@@ -16,19 +16,19 @@ rejects(err);
 
 }
 
-exports.AddLinkdinToken = async (req, res) => {
+exports.AddYouTubeToken = async (req, res) => {
 try{
-    if (req.body._id && req.body.linkdinid && req.body.oauth_token && req.body._id.match(/^[0-9a-fA-F]{24}$/)) {
+    if (req.body._id && req.body.youtubeid && req.body.oauth_token && req.body._id.match(/^[0-9a-fA-F]{24}$/)) {
 
         let map = new Map();
-        map.set(req.body.linkdinid,req.body.oauth_token);
+        map.set(req.body.youtubeid,req.body.oauth_token);
         console.log(map);
   
        Brand.updateOne({
             "_id": req.body._id
         }, {
-            'linkdinCredential':map,
-            'linkdinPicture':req.body.linkdinPicture
+            'youtubeCredential':map,
+            'youtubePicture':req.body.youtubePicture
         }, function (error, response) {
             console.log(response);
             if (error) {
@@ -60,7 +60,7 @@ res.send({status: 0, msg: "Internal Server error check your credential and try a
 }
 }
 
-exports.removeLinkdinToken = async (req, res) => {
+exports.removeYouTubeToken = async (req, res) => {
     try{
         if (req.body._id && req.body._id.match(/^[0-9a-fA-F]{24}$/)) {
     
@@ -69,8 +69,8 @@ exports.removeLinkdinToken = async (req, res) => {
            Brand.updateOne({
                 "_id": req.body._id
             }, {
-                'linkdinCredential':"",
-                'linkdinPicture':""
+                'youtubeCredential':"",
+                'youtubePicture':""
             }, function (error, response) {
                 console.log(response);
                 if (error) {

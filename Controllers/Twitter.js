@@ -127,10 +127,10 @@ exports.AddTwitterToken = async (req, res) => {
                   res.json({status: 0, msg: "Internal Server Error check your credentials"})
               } else {
                   if (response.nModified == 1) {  
-                      res.json({Status: 1, msg: "updated succesfully"})
+                      res.json({status: 1, msg: "Updated succesfully"})
   
                   } else {
-                      res.json({Status: 0, msg: "Not Updated/Dont tyr to Overwrite"})
+                      res.json({status: 0, msg: "Not Updated/Dont tyr to Overwrite"})
   
                   }
               }
@@ -166,10 +166,10 @@ exports.AddTwitterToken = async (req, res) => {
                     res.json({status: 0, msg: "Internal Server Error check your credentials"})
                 } else {
                     if (response.nModified == 1) {  
-                        res.json({Status: 1, msg: "updated succesfully"})
+                        res.json({status: 1, msg: "updated succesfully"})
     
                     } else {
-                        res.json({Status: 0, msg: "Not Updated/Dont tyr to Overwrite"})
+                        res.json({status: 0, msg: "Not Updated/Dont tyr to Overwrite"})
     
                     }
                 }

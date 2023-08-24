@@ -51,8 +51,17 @@ const Brandschema = new mong.Schema({
     },
     twitterAccessToken: String,
     twitterAccessSecret: String,
-    linkedinid: String,
-    linkedintoken: String,
+    linkdinid: String,
+    linkdinCredential:{
+        type: Map,
+        of: String
+    },
+    linkdinPicture:String,
+    youtubeCredential:{
+        type: Map,
+        of: String
+    },
+    youtubePicture:String,
     image: String,
     ptcredential: {
         type: Map,

@@ -6,6 +6,7 @@ const LoginServiceNew = require("../Service/new.login.js");
 const Stripe = require("../Service/stripe");
 const Team = require("../Service/team");
 const Linkedin = require("../Controllers/LinkedIn");
+const Youtube = require("../Controllers/Youtube");
 const Pinterest = require("../Controllers/Pinterest");
 const Twitter = require("../Controllers/Twitter")
 const Facebook = require('../Controllers/Facebook');
@@ -42,8 +43,8 @@ router.post('/ShowAllBrands', Brand.ShowAllBrands);
 router.post('/UpdateBrand', Brand.UpdateBrand);
 router.get('/Plans', LoginServiceNew.Plans);  //--By Shahzama
 
-router.post('/GetAuthLink/Linkedin', Linkedin.GetAuthLink);
-router.get('/LinkedIn/callback', Linkedin.Callback);
+// router.post('/GetAuthLink/Linkedin', Linkedin.GetAuthLink);
+// router.get('/LinkedIn/callback', Linkedin.Callback);
 
 // router.post('/GetAuthLink/Pinterest', Pinterest.GetAuthLink);
 // router.get('/Pinterest/callback', Pinterest.Callback);
@@ -56,6 +57,13 @@ router.post('/AddApikeysandTokenInstagram', Instagram.AddApikeysandTokenInstagra
 router.post('/AddApikeysandTokenPintrest', Pinterest.AddApikeysandTokenPintrest);
 router.post('/AddTwitterToken', Twitter.AddTwitterToken);
 router.post('/removeTwitterToken', Twitter.removeTwitterToken);
+
+router.post('/AddLinkdinToken', Linkedin.AddLinkdinToken);
+router.post('/removeLinkdinToken', Linkedin.removeLinkdinToken);
+
+router.post('/AddYouTubeToken', Youtube.AddYouTubeToken);
+router.post('/removeYouTubeToken', Youtube.removeYouTubeToken);
+
 
 router.post('/removeApikeyPintrest', Pinterest.removeApikeyPintrest);
 
