@@ -1,4 +1,5 @@
 const oauth = require('oauth')
+const Brand=require('../Database/Model/Brand')
 const oauthConsumer = new oauth.OAuth(
     'https://twitter.com/oauth/request_token', 'https://twitter.com/oauth/access_token',
     process.env.TWITTER_CONSUMER_API_KEY,
@@ -109,3 +110,82 @@ exports.PublishTwitter=async(req,res)=>{
     
     
 }
+
+exports.AddTwitterToken = async (req, res) => {
+  try{
+      if (req.body._id && req.body.accessToken && req.body.accessSecret && req.body._id.match(/^[0-9a-fA-F]{24}$/)) {
+     
+         Brand.updateOne({
+              "_id": req.body._id
+          }, {
+              'twitterAccessToken':req.body.accessToken,
+              'twitterAccessSecret':req.body.accessSecret
+          }, function (error, response) {
+              console.log(response);
+              if (error) {
+                  console.log(error);
+                  res.json({status: 0, msg: "Internal Server Error check your credentials"})
+              } else {
+                  if (response.nModified == 1) {  
+                      res.json({Status: 1, msg: "updated succesfully"})
+  
+                  } else {
+                      res.json({Status: 0, msg: "Not Updated/Dont tyr to Overwrite"})
+  
+                  }
+              }
+              console.log(error);
+  
+          });
+  
+      } else {
+  
+          res.json({status: 0, msg: "Send all Necessary Fields"})
+      }
+  }
+  catch(err){
+  console.log(err);
+  res.send({status: 0, msg: "Internal Server error check your credential and try again"});
+  
+  }
+  }
+
+  exports.removeTwitterToken = async (req, res) => {
+    try{
+        if (req.body._id && req.body._id.match(/^[0-9a-fA-F]{24}$/)) {
+       
+           Brand.updateOne({
+                "_id": req.body._id
+            }, {
+                'twitterAccessToken':"",
+                'twitterAccessSecret':""
+            }, function (error, response) {
+                console.log(response);
+                if (error) {
+                    console.log(error);
+                    res.json({status: 0, msg: "Internal Server Error check your credentials"})
+                } else {
+                    if (response.nModified == 1) {  
+                        res.json({Status: 1, msg: "updated succesfully"})
+    
+                    } else {
+                        res.json({Status: 0, msg: "Not Updated/Dont tyr to Overwrite"})
+    
+                    }
+                }
+                console.log(error);
+    
+            });
+    
+        } else {
+    
+            res.json({status: 0, msg: "Send all Necessary Fields"})
+        }
+    }
+    catch(err){
+    console.log(err);
+    res.send({status: 0, msg: "Internal Server error check your credential and try again"});
+    
+    }
+    }
+  

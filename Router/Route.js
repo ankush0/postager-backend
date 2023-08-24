@@ -54,6 +54,8 @@ router.get('/twitter/callback', Twitter.Callback);
 router.post('/AddApikeysandTokenFacebook', Facebook.AddApikeysandTokenFacebook);
 router.post('/AddApikeysandTokenInstagram', Instagram.AddApikeysandTokenInstagram);
 router.post('/AddApikeysandTokenPintrest', Pinterest.AddApikeysandTokenPintrest);
+router.post('/AddTwitterToken', Twitter.AddTwitterToken);
+router.post('/removeTwitterToken', Twitter.removeTwitterToken);
 
 router.post('/removeApikeyPintrest', Pinterest.removeApikeyPintrest);
 
