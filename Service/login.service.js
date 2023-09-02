@@ -1229,7 +1229,8 @@ exports.Post_To_All_SocialMedia_Scheduling = async (req, res) => {
 exports.Show_All_Post = async (req, res) => {
     if (req.body.userid && req.body.userid.match(/^[0-9a-fA-F]{24}$/)) {
         Post.find({
-            userid: req.body.userid
+            userid: req.body.userid,
+            Brand: req.body.brandId
         }, function (err, result) {
             if (!err) {
                 res.json({
