@@ -928,57 +928,53 @@ exports.Post_To_All_SocialMedia_Immidiatly = async (req, res) => {
                 
             }
 
-            if (req.body.Platform.includes("pintrest")) {
+            if (req.body.Platform.includes("Pinterest")) {
                 console.log("-----------Pintrest------------");
                 for (let [key, value] of branddata.ptcredential) {
                     let containerParams = new URLSearchParams();
                     var pageid = key;
-                    var accesstoken = "pina_AMAYRGIWAA3Y2AIAGBAGSD3K5TG6JCIBQBIQCDANVLUQHDMFOLGSVH6HXA3JD7XRZ6WDTQE62ZJG2EFVBPPLYJETMLFA3CQA";
-                    console.log(accesstoken);
+                    var accesstoken = value;
 
                     try {
-                                            const response = await axios.get(
-                                            `https://api.pinterest.com/v5/boards/`,
-                                            {
-                                                headers: {
-                                                Authorization: `Bearer ${accesstoken}`
-                                                }
-                                            }
-                                            );
-
-                                            console.log('Boards retrieved successfully!');
-                                            console.log(response.data.items[0].id);
-                                            var board_id = response.data.items[0].id;
-                                        } catch (error) {
-                                            console.error('Error retrieving boards:', error.response.data);
-                                        }
-                                        console.log(board_id);
-                                  try {
-                                    const response = await axios.post(
-                                      `https://api-sandbox.pinterest.com/v5/pins`,
-                                      {
-                                        "title": "My Pin",
-                                          "description": "Pin Description",
-                                          "board_id": board_id,
-                                          "media_source": {
-                                            "source_type": "image_url",
-                                            "url": "https://i.pinimg.com/564x/28/75/e9/2875e94f8055227e72d514b837adb271.jpg"
-                                          }
-                                      },
-                                      {
-                                        headers: {
-                                          Authorization: `Bearer pina_AMAYRGIWAA3Y2AIAGBAGSDY4I7IOJCIBACGSOODOMVZ7TBV6JM7RLVELPPGNTYMUIR77JFDT7VWRCLHF6KLKGDZYELIJ6VYA`,
-                                          'Content-Type': 'application/json'
-                                        }
-                                      }
-                                    );
-
-                                    console.log('Post created successfully!');
-                                    console.log(response.data);
-                                  } catch (error) {
-                                    console.error('Error creating the post:', error.response.data);
-                                  }
-                                }
+                        const response = await axios.get(
+                        `https://api.pinterest.com/v5/boards/`,
+                        {
+                            headers: {
+                            Authorization: `Bearer ${accesstoken}`
+                            }
+                        }
+                        );
+                        console.log('Boards retrieved successfully!');
+                        console.log(response.data.items[0].id);
+                        var board_id = response.data.items[0].id;
+                    } catch (error) {
+                        console.error('Error retrieving boards:', error.response.data);
+                    }
+                    try {
+                    const response = await axios.post(
+                        `https://api.pinterest.com/v5/pins`,
+                        {
+                            "title": req.body.Content,
+                            "description": req.body.Content,
+                            "board_id": board_id,
+                            "media_source": {
+                            "source_type": "image_url",
+                            "url": Image
+                            }
+                        },
+                        {
+                        headers: {
+                            Authorization: `Bearer ${accesstoken}`,
+                            'Content-Type': 'application/json'
+                        }
+                        }
+                    );
+                    console.log('Post created successfully!');
+                    console.log(response.data);
+                    } catch (error) {
+                    console.error('Error creating the post:', error.response.data);
+                    }
+                }
             }
 
             if (req.body.Platform.includes("linkedin")) {
