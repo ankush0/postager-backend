@@ -978,64 +978,92 @@ exports.Post_To_All_SocialMedia_Immidiatly = async (req, res) => {
                 }
             }
 
-            if (req.body.Platform.includes("linkedin")) {
+            if (req.body.Platform.includes("Linkedin")) {
+                // const postContent = {
+                //   "author": "urn:li:organization:5515715",
+                //   "commentary": "Sample text Post",
+                //   "visibility": "PUBLIC",
+                //   "distribution": {
+                //     "feedDistribution": "MAIN_FEED",
+                //     "targetEntities": [],
+                //     "thirdPartyDistributionChannels": []
+                //   },
+                //   "lifecycleState": "PUBLISHED",
+                //   "isReshareDisabledByAuthor": false
+                // };
+
+                //   try {
+                //     const response = await axios.post(
+                //       'https://api.linkedin.com/rest/posts',
+                //       {
+                //   "author": "urn:li:person:5515716",
+                //   "commentary": "Sample text Post",
+                //   "visibility": "PUBLIC",
+                //   "distribution": {
+                //     "feedDistribution": "MAIN_FEED",
+                //     "targetEntities": [],
+                //     "thirdPartyDistributionChannels": []
+                //   },
+                //   "lifecycleState": "PUBLISHED",
+                //   "isReshareDisabledByAuthor": false
+                // },
+                //       {
+                //         headers: {
+                //           'Authorization': `Bearer AQXn8n-6zt0JpuEcsyxyhvzdAJvS6LgImYPKybq2UD8MdCo6AofkoHvRKGzcFuX0mFokoDgYkmqeBLIPbPA35EyXc5NPMkftdgPgsBvRX9irvkEXQRh0BS4b-FmKkLRCKv8QXWlYujHl93ZQcKGk2Zn4QJxObwwRn-JM60Ww3naI9JN6vspYICuPfaVGy4X9VUNJt36y0m-oBdgEGakQwj8G1Igl3RfIRgYdU0iHUcDeFyXYSCXDPkao31fiUa4Y1V12HZ5jS_rZkNVGTIO1gsMzr-UInmnnHNf0DSyGij1TasIUFRY75IpduYmK5lhZu085MnhvrEri1TUaqL89uBZsSIHIqQ`,
+                //           'Content-Type': 'application/json',
+                //           'X-Restli-Protocol-Version': '2.0.0',
+                //           'LinkedIn-Version': '202301'
+                //         },
+                //       }
+                //     );
+
+                //     console.log('Successfully posted on LinkedIn:', response.data);
+                //   } catch (error) {
+                //     console.error('Error posting on LinkedIn:', error);
+                //   }
+                // console.log("-----------Linkedin------------",branddata.linkedintoken,",,,,,,,,,");
+                // try {
+                //     await Linekedin.PublishLinkedIn("hello", req.body.Content, 'https://www.instagram.com/dm29phase1/', Image, branddata.linkedinid, '"AQUTZw8zqjT0fveuLgZrU7frtXDsQqKk-5jTIhJlb_Z86W6_RhsE0xP_hmuzkFBSOTfD50OteHeZB0PrXd8EtK6Y0-OQMnChPtOb3wMwxnA6VZMDgz0pJu0oCdfEuAnHlzRN_UP6-3g2NQPsZ3PkgmkoC1NizXqvO0Td7RTDNnj_W8Q8qhsBl6i_wZHFYxymMqZhEWnLHl6hCRPOJUYtTC2pRDvWAoCKAe8YPjLh53l-cQNZifkQDVsITFtzpi6Ju7sTtZqcc7UW52x8hCRyZ_R7avKsaSww7j9jsiI7gjQGe5WYqTLEVB24ZNl4xg-VgXhFyV8Q562_s9BJozH02uZZ2cNdgw"').then((data) => {
+
+                //         linkedinid = data.id;
+
+                //     })
+                // }
+                // catch (err) {
+
+                //     console.log("error in posting Linekedin post")
+                //     console.log(err);
+                // }
+
+                const accessToken = 'AQXn8n-6zt0JpuEcsyxyhvzdAJvS6LgImYPKybq2UD8MdCo6AofkoHvRKGzcFuX0mFokoDgYkmqeBLIPbPA35EyXc5NPMkftdgPgsBvRX9irvkEXQRh0BS4b-FmKkLRCKv8QXWlYujHl93ZQcKGk2Zn4QJxObwwRn-JM60Ww3naI9JN6vspYICuPfaVGy4X9VUNJt36y0m-oBdgEGakQwj8G1Igl3RfIRgYdU0iHUcDeFyXYSCXDPkao31fiUa4Y1V12HZ5jS_rZkNVGTIO1gsMzr-UInmnnHNf0DSyGij1TasIUFRY75IpduYmK5lhZu085MnhvrEri1TUaqL89uBZsSIHIqQ';
+
                 const postContent = {
-                  "author": "urn:li:organization:5515715",
-                  "commentary": "Sample text Post",
-                  "visibility": "PUBLIC",
-                  "distribution": {
-                    "feedDistribution": "MAIN_FEED",
-                    "targetEntities": [],
-                    "thirdPartyDistributionChannels": []
+                  author: 'urn:li:person:212672257',
+                  lifecycleState: 'PUBLISHED',
+                  specificContent: {
+                    'com.linkedin.ugc.ShareContent': {
+                      shareCommentary: {
+                        text: 'Hello from Node.js!',
+                      },
+                      shareMediaCategory: 'NONE',
+                    },
                   },
-                  "lifecycleState": "PUBLISHED",
-                  "isReshareDisabledByAuthor": false
-                };
-
-                  try {
-                    const response = await axios.post(
-                      'https://api.linkedin.com/rest/posts',
-                      {
-                  "author": "urn:li:person:5515716",
-                  "commentary": "Sample text Post",
-                  "visibility": "PUBLIC",
-                  "distribution": {
-                    "feedDistribution": "MAIN_FEED",
-                    "targetEntities": [],
-                    "thirdPartyDistributionChannels": []
+                  visibility: {
+                    'com.linkedin.ugc.MemberNetworkVisibility': 'PUBLIC',
                   },
-                  "lifecycleState": "PUBLISHED",
-                  "isReshareDisabledByAuthor": false
-                },
-                      {
-                        headers: {
-                          'Authorization': `Bearer AQUYS7LVTJfobsqPSiB0rZ95swOV40_MAH0igEMJsS4-5oBoniSbd-cJ3FInZJI4lgT5IYoQh7kAx7qBXoMmLQw4YmzbelFHC0_pTC9ZqJ7M22lNtN0t9xofuUbHc78Grxp_XvKhL_yZyWT8KkHlWJt3sBt-8R0JAs0x9ju8Lnc9nHilK2XiknII17LaApekwJ-KrF3iIczOYKdVGLEWJHbqLSShhQpt7nuTAA97IeCH3oDfyqACTLbV6bl9jhYbZmxSHeGMIdYdTXQCAOKIvnuzqWlwk_uuHJklXXyGJ25qJxtfa-dNeRxXXbyOdQeDBVPVzAEluTGwnas6C1VLk2sNB3ncHQ`,
-                          'Content-Type': 'application/json',
-                          'X-Restli-Protocol-Version': '2.0.0',
-                          'LinkedIn-Version': '202301'
-                        },
-                      }
-                    );
-
-                    console.log('Successfully posted on LinkedIn:', response.data);
-                  } catch (error) {
-                    console.error('Error posting on LinkedIn:', error);
-                  }
-                console.log("-----------Linkedin------------",branddata.linkedintoken,",,,,,,,,,");
-                try {
-                    await Linekedin.PublishLinkedIn("hello", req.body.Content, 'https://www.instagram.com/dm29phase1/', Image, branddata.linkedinid, branddata.linkedintoken).then((data) => {
-
-                        linkedinid = data.id;
-
-                    })
-                }
-                catch (err) {
-
-                    console.log("error in posting Linekedin post")
-                    console.log(err);
-                }
-
-
+                };                
+                axios.post('https://api.linkedin.com/v2/ugcPosts', postContent, {
+                  headers: {
+                    'Authorization': `Bearer ${accessToken}`,
+                    'Content-Type': 'application/json',
+                  },
+                })
+                .then(response => {
+                  console.log('Posted successfully:', response.data);
+                })
+                .catch(error => {
+                  console.error('Error posting on LinkedIn:', error);
+                });
 
 
 
