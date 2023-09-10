@@ -41,8 +41,10 @@ router.post('/stripe/generate/clientSecret', Stripe.GenerateKey);
 router.post('/AddNewBrand', Brand.AddNewBrand);
 router.post('/ShowAllBrands', Brand.ShowAllBrands);
 router.post('/UpdateBrand', Brand.UpdateBrand);
-router.get('/Plans', LoginServiceNew.Plans);  //--By Shahzama
 
+router.get('/Plans', LoginServiceNew.Plans);  
+
+router.post('/pinterestBrands', Brand.pinterestBrands);
 // router.post('/GetAuthLink/Linkedin', Linkedin.GetAuthLink);
 // router.get('/LinkedIn/callback', Linkedin.Callback);
 
