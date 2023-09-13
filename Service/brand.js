@@ -75,7 +75,6 @@ module.exports.ShowAllBrands = async (req, res) => {
 
 module.exports.UpdateBrand = async (req, res) => {
     try {
-        console.log("llll",req.body.updateBrand);
 
         switch (req.body.updateBrand) {
             case "save": if (req.body.name) {
@@ -86,6 +85,34 @@ module.exports.UpdateBrand = async (req, res) => {
                 } else {
                     res.json({ status: 1, message: "Brand couldn't be updated" });
                 }
+            }
+                break;
+            case "subscription": if (req.body.type) {                
+                var date = new Date(); // Now
+                if(req.body.type==2){
+                    date.setDate(date.getDate() + 30)
+                    const updatedBrand = await Brand.updateOne({ _id: req.body._id }, { $set: { planName: "Yearly", planType: "Yearly", planPrice: "60", planExpiry: date.toISOString().split('T')[0] } })
+                    console.log(updatedBrand);
+                    if (updatedBrand.nModified > 0) {
+                        res.json({ status: 1, message: "Brand updated successfully" });
+                    } else {
+                        res.json({ status: 1, message: "Brand couldn't be updated" });
+                    }
+                }else{
+                    date.setDate(date.getDate() + 365)
+                    const updatedBrand = await Brand.updateOne({ _id: req.body._id }, { $set: { planName: "Montly", planType: "Montly", planPrice: "5", planExpiry: date.toISOString().split('T')[0] } })
+                    
+                    if (updatedBrand.nModified > 0) {
+                        res.json({ status: 1, message: "Brand updated successfully" });
+                    } else {
+                        res.json({ status: 1, message: "Brand couldn't be updated" });
+                    }
+                }
+                // if (updatedBrand.nModified > 0) {
+                //     res.json({ status: 1, message: "Brand updated successfully" });
+                // } else {
+                //     res.json({ status: 1, message: "Brand couldn't be updated" });
+                // }
             }
                 break;
             case "delete": const deleteBrand = await Brand.deleteOne({ _id: req.body._id })

@@ -8,31 +8,31 @@ const Brandschema = new mong.Schema({
     //     type: [],
     //     default: 1,
     // },
-    plan:
-    {
-        planId: {
-            type: String,
-            required: true,
-            default: "1",
-        },
-        planName: {
-            type: String,
-            default: "Free",
-            required: true
-        },
-        planPrice: {
-            type: String,
-            default: "0.00",
-            required: true
-        },
-        planExpiry: {
-            type: Date,
-            required: true,
-            default: '1-1-2040',
-        },
-    }
-    ,
-
+    planId: {
+        type: String,
+        required: true,
+        default: "1",
+    },
+    planName: {
+        type: String,
+        default: "Free",
+        required: true
+    },
+    planType: {
+        type: String,
+        default: "Monthly",
+        required: true
+    },
+    planPrice: {
+        type: String,
+        default: "0.00",
+        required: true
+    },
+    planExpiry: {
+        type: Date,
+        required: true,
+        default: '1-1-2040',
+    },
     // tokens: [{
     //     token: {
     //         type: String,
