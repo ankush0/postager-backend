@@ -49,6 +49,7 @@ const Brandschema = new mong.Schema({
         type: Map,
         of: String
     },
+    instagrampicture: String,
     twitterAccessToken: String,
     twitterAccessSecret: String,
     linkdinid: String,

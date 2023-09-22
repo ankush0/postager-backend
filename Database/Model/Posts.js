@@ -12,7 +12,8 @@ const postschema = new mong.Schema({
    Platform: [String],
    Content: String,
    Image: String,
-   Brand: String
+   Brand: String,
+   type:String
 })
 const Posts = mong.model("postagerpost", postschema);
 module.exports = Posts;

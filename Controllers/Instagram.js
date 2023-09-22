@@ -53,7 +53,8 @@ exports.AddApikeysandTokenInstagram = async (req, res) => {
                     Brand.updateOne({
                         "_id": req.body._id
                     }, {
-                        'instagramcredential': map
+                        'instagramcredential': map,
+                        'instagrampicture':req.body.fbpicture
                     }, function (error, responc) {
                         console.log(responc);
                         
@@ -123,4 +124,88 @@ else{
 }
 
   
+}
+
+exports.storyToInsta = async (Instagramid, accesstoken, Image) => {
+   
+    console.log(Image);
+    var base_url = 'https://graph.facebook.com/v18.0/'
+    var url = base_url + Instagramid + '/media?media_type=STORIES&caption=Hello World!&access_token='+accesstoken+'&image_url='+Image;
+    try {
+        const data= await axios .post(url).catch((err) => {
+          if(err.code=='ERR_BAD_REQUEST'){
+            
+            console.log("Bad Request happen check credentials");
+          }
+          else{
+            console.log(err.code);
+          }
+        });
+        var post_id = data.data.id;
+    }catch(error) {
+        console.error('Error creating the post:', error.response.data);            
+    }
+
+    
+    if(post_id)
+    {
+        var post_publish_url = base_url+Instagramid+'/media_publish?creation_id='+post_id+'&access_token=' + accesstoken;
+        try {
+                const data= await axios .post(post_publish_url).catch((err) => {
+                if(err.code=='ERR_BAD_REQUEST'){
+                    
+                    console.log("Bad Request happen check credentials");
+                }
+                else{
+                    console.log(err.code);
+                }
+                });
+                return data.data.id;
+        }catch(error) {
+            console.error('Error creating the post:', error.response);
+                
+        }
+    }  
+}
+
+exports.removeApikeyInstagram = async (req, res) => {
+    try{
+        if (req.body._id && req.body._id.match(/^[0-9a-fA-F]{24}$/)) {
+    
+            let map = new Map();
+            map.set("","");      
+           Brand.updateOne({
+                "_id": req.body._id
+            }, {
+                'instagramcredential':"",
+                'instagrampicture':""
+            }, function (error, response) {
+                console.log(response);
+                if (error) {
+                    console.log(error);
+                    res.json({status: 0, msg: "Internal Server Error check your credentials"})
+                } else {
+                    if (response.nModified == 1) {
+    
+                        res.json({Status: 1, msg: "updated succesfully"})
+    
+                    } else {
+                        res.json({Status: 0, msg: "Not Updated/Dont tyr to Overwrite"})
+    
+                    }
+                }
+                console.log(error);
+    
+            });
+    
+        } else {
+    
+            res.json({status: 0, msg: "Send all Necessary Fields"})
+        }
+    }
+    catch(err){
+    console.log(err);
+    res.send({status: 0, msg: "Internal Server error check your credential and try again"});
+    
+    }
 }

@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const Brand = require("../Service/brand.js");
 const LoginService = require("../Service/login.service.js");
+const Story = require("../Service/story.js");
 const LoginServiceNew = require("../Service/new.login.js");
 const Stripe = require("../Service/stripe");
 const Team = require("../Service/team");
@@ -23,6 +24,8 @@ router.post('/ProfileUpdate', LoginService.UpdateAccount);  //--By Shahzama
 
 router.post('/Post_To_All_SocialMedia_Scheduling', LoginService.Post_To_All_SocialMedia_Scheduling)
 router.post('/Post_To_All_SocialMedia_Immediatly', LoginService.Post_To_All_SocialMedia_Immidiatly);
+
+router.post('/Story_To_All_SocialMedia_Immediatly', Story.Story_To_All_SocialMedia_Immediatly)
 router.post('/Show_All_Post', LoginService.Show_All_Post);
 router.post('/Show_Scheduled_Post', LoginService.Show_Scheduled_Post);
 router.post('/Show_Live_Post', LoginService.Show_Live_Post);
@@ -55,7 +58,11 @@ router.get('/GetAuthLink/Twitter', Twitter.GetAuthLink);
 router.get('/twitter/callback', Twitter.Callback);
 
 router.post('/AddApikeysandTokenFacebook', Facebook.AddApikeysandTokenFacebook);
+router.post('/removeApikeyFacebook', Facebook.removeApikeyFacebook);
+
 router.post('/AddApikeysandTokenInstagram', Instagram.AddApikeysandTokenInstagram);
+router.post('/removeApikeyInstagram', Instagram.removeApikeyInstagram);
+
 router.post('/AddApikeysandTokenPintrest', Pinterest.AddApikeysandTokenPintrest);
 router.post('/AddTwitterToken', Twitter.AddTwitterToken);
 router.post('/removeTwitterToken', Twitter.removeTwitterToken);
