@@ -3,6 +3,7 @@ const router = express.Router();
 const Brand = require("../Service/brand.js");
 const LoginService = require("../Service/login.service.js");
 const Story = require("../Service/story.js");
+const Reels = require("../Service/reels.js");
 const LoginServiceNew = require("../Service/new.login.js");
 const Stripe = require("../Service/stripe");
 const Team = require("../Service/team");
@@ -26,6 +27,7 @@ router.post('/Post_To_All_SocialMedia_Scheduling', LoginService.Post_To_All_Soci
 router.post('/Post_To_All_SocialMedia_Immediatly', LoginService.Post_To_All_SocialMedia_Immidiatly);
 
 router.post('/Story_To_All_SocialMedia_Immediatly', Story.Story_To_All_SocialMedia_Immediatly)
+router.post('/Reels_To_All_SocialMedia_Immediatly', Reels.Reels_To_All_SocialMedia_Immediatly)
 router.post('/Show_All_Post', LoginService.Show_All_Post);
 router.post('/Show_Scheduled_Post', LoginService.Show_Scheduled_Post);
 router.post('/Show_Live_Post', LoginService.Show_Live_Post);
