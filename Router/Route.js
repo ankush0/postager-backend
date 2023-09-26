@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const Brand = require("../Service/brand.js");
 const LoginService = require("../Service/login.service.js");
+const LoginService = require("../Service/story.js");
 const LoginServiceNew = require("../Service/new.login.js");
 const Stripe = require("../Service/stripe");
 const Team = require("../Service/team");
@@ -22,6 +23,8 @@ router.post('/ProfileUpdate', LoginService.UpdateAccount);  //--By Shahzama
 
 router.post('/Post_To_All_SocialMedia_Scheduling', LoginService.Post_To_All_SocialMedia_Scheduling)
 router.post('/Post_To_All_SocialMedia_Immediatly', LoginService.Post_To_All_SocialMedia_Immidiatly);
+
+router.post('/Stroy_To_All_SocialMedia_Immediatly', Stroy.Post_To_All_SocialMedia_Immidiatly);
 router.post('/Show_All_Post', LoginService.Show_All_Post);
 router.post('/Show_Scheduled_Post', LoginService.Show_Scheduled_Post);
 router.post('/Show_Live_Post', LoginService.Show_Live_Post);
