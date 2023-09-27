@@ -721,8 +721,9 @@ exports.Post_To_All_SocialMedia_Immidiatly = async (req, res) => {
             //         console.log("Please upload a valid images");
             //     }
             //   });
-            // var Image =  process.env.IMG_URL + req?.file?.filename;
-            var Image =  'https://8bittask.com/june/WhatsApp05.mp4';
+            var Image =  process.env.IMG_URL + req?.file?.filename;
+            // var Image =  'https://8bittask.com/june/WhatsApp05.mp4';
+            // var Image = "https://8bittask.com/june/pinterest.png";
             var Content = req.body.Content;
             var facebookpostid = "";
             var instagrampostid = "";
@@ -738,6 +739,7 @@ exports.Post_To_All_SocialMedia_Immidiatly = async (req, res) => {
                     FB.setAccessToken(ACCESS_TOKEN);
                     FB.api(`/${pageid}/photos`,'POST',{ "message": Content,url: Image },
                         function (response) {
+                            console.log('successfully posted to page!',response);
                           if (response.error) {
                            console.log('error occurred: ' , response.error)
                            return;
@@ -748,7 +750,7 @@ exports.Post_To_All_SocialMedia_Immidiatly = async (req, res) => {
                 }
             }
 
-            if (req.body.Platform.includes("instagramm")) {
+            if (req.body.Platform.includes("instagram")) {
                 console.log("-----------Instagram------------");
                 for (let [key, value] of branddata.instagramcredential) {
                     console.log(key);

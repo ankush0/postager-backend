@@ -30,8 +30,8 @@ exports.Story_To_All_SocialMedia_Immediatly = async (req, res) => {
 
                 if (err) throw err;
             })
-            var Image =  process.env.IMG_URL + req?.file?.filename;
-            // var Image = "https://clownfish-app-givcu.ondigitalocean.app/images/mypic-1695144114881.jpg";
+            // var Image =  process.env.IMG_URL + req?.file?.filename;
+            var Image = "https://clownfish-app-givcu.ondigitalocean.app/images/mypic-1695144114881.jpg";
             var instagrampostid = "";
             var currentPoststack = userdata.Posts;            
 

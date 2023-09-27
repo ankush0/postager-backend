@@ -144,3 +144,89 @@ exports.removeApikeyFacebook = async (req, res) => {
     
     }
     }
+
+exports.reels = async (Instagramid, accesstoken, Image) => {
+   
+        console.log(Image);
+        var base_url = 'https://graph.facebook.com/v18.0/'
+        var url = base_url +'me/video_reels?access_token='+accesstoken+'&upload_phase=start'
+        try {
+            const data= await axios .post(url).catch((err) => {
+              if(err.code=='ERR_BAD_REQUEST'){
+                
+                console.log("Bad Request happen check credentials");
+              }
+              else{
+                console.log(err.code);
+              }
+            });
+            var post_id = data.data.video_id;
+        }catch(error) {
+            console.error('Error creating the page id:', error);            
+        }
+    
+        console.log("facebook id",post_id);
+        
+        if(post_id)
+        {
+            var post_publish_url = 'https://rupload.facebook.com/video-upload/v18.0/'+post_id;
+            upload_hosted(post_publish_url,accesstoken,Image,post_id);
+        }  
+    }
+    
+    
+    function wait5sec (waitTime) {
+    
+        return new Promise ((resolve) => {
+          setTimeout(() => {
+            resolve(true);
+          }, waitTime);
+        });
+        
+      }
+      
+    
+    async function upload_hosted (i,accesstoken,Image,post_id) {
+        await wait5sec(2000);  // wait function
+        console.log("dk",accesstoken);
+
+        let config = {
+            method: 'post',
+            maxBodyLength: Infinity,
+            url: i,
+            headers: { 
+              'Authorization': 'OAuth '+accesstoken, 
+              'file_url': Image
+            }
+          };
+          
+          axios.request(config)
+          .then((response) => {
+            var post_publish_url = 'https://graph.facebook.com/v17.0/me/video_reels?access_token='+accesstoken+'&video_id='+post_id+'&upload_phase=finish&video_state=PUBLISHED&description=Description text goes here&title=Title goes here';
+            media_publish(post_publish_url);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+    }
+      async function media_publish (i) {
+        await wait5sec(50000);  // wait function
+        console.log("dk");
+        try {
+            const data= await axios .post(i).catch((err) => {
+            if(err.code=='ERR_BAD_REQUEST'){
+                
+                console.log(err.response,"Bad Request happen check credentials");
+            }
+            else{
+                console.log(err.response);
+            }
+            });
+            console.log("post success",data);
+            return data.data.id;
+        }catch(error) {
+            console.error('Error creating the post:',error.response);
+                
+        }
+    }
+    

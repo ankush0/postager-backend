@@ -12,6 +12,7 @@ var { LocalStorage } = require('node-localstorage');
 const serverfile = require('../server.js');
 var upload = serverfile.upload
 const Instagram = require("../Controllers/Instagram");
+const Facebook = require("../Controllers/Facebook");
 
 // constructor function to create a storage directory inside our project for all our localStorage setItem.
 var localStorage = new LocalStorage('./Localstorage');
@@ -30,7 +31,8 @@ exports.Reels_To_All_SocialMedia_Immediatly = async (req, res) => {
 
                 if (err) throw err;
             })
-            var Image =  process.env.IMG_URL + req?.file?.filename;
+            // var Image =  process.env.IMG_URL + req?.file?.filename;
+            var Image =  'https://8bittask.com/june/WhatsApp05.mp4';
             // var Image = "https://clownfish-app-givcu.ondigitalocean.app/images/mypic-1695144114881.jpg";
             var instagrampostid = "";
             var currentPoststack = userdata.Posts;            
@@ -45,6 +47,17 @@ exports.Reels_To_All_SocialMedia_Immediatly = async (req, res) => {
                     instagrampostid = await Instagram.reelsToInsta(pageid, accesstoken, Image );
                 }
             }
+
+            if (req.body.Platform.includes("facebook")) {
+                console.log("-----------facebook reels------------");
+                for (let [key, value] of branddata.facebookcredential) {
+                    let containerParams = new URLSearchParams();
+                    var pageid = key;
+                    var accesstoken = value;
+                    instagrampostid = await Facebook.reels(pageid, accesstoken, Image );
+                }
+            }
+            
 
             var post = new Post({
                 userid: req.body.userid,

@@ -80,13 +80,11 @@ exports.AddApikeysandTokenInstagram = async (req, res) => {
 
 }
 exports.postToInsta = async (Instagramid, Content, Image,accesstoken) => {
-   
-    console.log(Content);
-    console.log(Image);
-    var base = 'https://graph.facebook.com/'
-    // var date_Frontend=req.body.date;
-    // var date=req.body.date;
-    var ping_adr = base + Instagramid + '/media?media_type=story&image_url=' + Image + '&caption=' + Content + '&access_token=' + accesstoken;
+    console.log("data");
+
+
+    var base = 'https://graph.facebook.com/';
+    var ping_adr = base + Instagramid + '/media?image_url=' + Image + '&caption=' + Content + '&access_token=' + accesstoken;
     const data= await axios
     .post(ping_adr).catch((err) => {
           if(err.code=='ERR_BAD_REQUEST'){
@@ -98,7 +96,7 @@ exports.postToInsta = async (Instagramid, Content, Image,accesstoken) => {
           }
         });
     
-
+console.log(data);
 if(data){
     var container_ping_adr=base+Instagramid+'/media_publish?creation_id='+data.data.id+'&access_token=' + accesstoken;;
     console.log(container_ping_adr);
