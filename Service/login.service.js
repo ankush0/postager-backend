@@ -698,6 +698,9 @@ exports.Post_To_All_SocialMedia_Immidiatly = async (req, res) => {
     try {
 
         var errorstaus = false;
+        
+        const errors = [];
+          
         if (req.body.Platform && req.body.userid.match(/^[0-9a-fA-F]{24}$/) && req.body.Content && req.body.Brand && req.body.Brand.match(/^[0-9a-fA-F]{24}$/)) {
             // console.log(req.file);
             var userdata = await user.findById(req.body.userid, function (err, result) {
@@ -728,7 +731,9 @@ exports.Post_To_All_SocialMedia_Immidiatly = async (req, res) => {
             var facebookpostid = "";
             var instagrampostid = "";
             var linkedinid = ""
-            var currentPoststack = userdata.Posts;            
+            var currentPoststack = userdata.Posts;  
+            
+               
 
             if (req.body.Platform.includes("facebook")) {
                 console.log("-----------Facebook------------");
@@ -739,12 +744,15 @@ exports.Post_To_All_SocialMedia_Immidiatly = async (req, res) => {
                     FB.setAccessToken(ACCESS_TOKEN);
                     FB.api(`/${pageid}/photos`,'POST',{ "message": Content,url: Image },
                         function (response) {
-                            console.log('successfully posted to page!',response);
+                            // console.log('successfully posted to page!',response);
                           if (response.error) {
-                           console.log('error occurred: ' , response.error)
-                           return;
+                            console.log('error occurred: ' , response.error.message)
+                            errorsMsg = response.error.message;
+                            errors.push("Username is required.");
+
+                            return;
                           }
-                          console.log('successfully posted to page!');
+                        //   console.log('successfully posted to page!');
                         }
                     );
                 }
@@ -1099,7 +1107,11 @@ exports.Post_To_All_SocialMedia_Immidiatly = async (req, res) => {
                     console.log(error);
                 }
             });
-            res.json({ msg: "post has been uploaded succesfully", status: 1 });
+            if(errorsMsg!=""){
+                res.json({ msg: errorsMsg, status: 1 });
+            }else{
+                res.json({ msg: "post has been uploaded succesfully", status: 1 });
+            }
         }
         else {
             res.json({
