@@ -24,23 +24,24 @@ try{
       
       console.log('the data is'+response.data);
       var longliveacesstoken=response.data.access_token;
-      var lonnglivepagesurl='https://graph.facebook.com/v3.2/'+ req.body.facebookid+'/accounts?access_token='+longliveacesstoken;
-      console.log(lonnglivepagesurl)
+      var lonnglivepagesurl='https://graph.facebook.com/v3.2/'+ req.body.facebookid+'/accounts?fields=access_token,id,name,about,category,website,picture&access_token='+longliveacesstoken;
+    //   console.log(lonnglivepagesurl)
       const pagesdata=await axios.get(lonnglivepagesurl);
       let map = new Map();
+    //   console.log(pagesdata.data.data[0].picture.data.url);
       pagesdata.data.data.forEach(function (item, index) {
-        // console.log("itemsis "+item)
+        console.log("itemsis "+item)
         // console.log(item.id);
         // console.log("url "+req.body.fbpicture);
         map.set(item.id,item.access_token);
       });
-      console.log(map);
+      
   
        Brand.updateOne({
             "_id": req.body._id
         }, {
             'facebookcredential':map,
-            'fbpicture':req.body.fbpicture
+            'fbpicture':pagesdata.data.data[0].picture.data.url
         }, function (error, response) {
             if (error) {
 

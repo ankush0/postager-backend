@@ -16,6 +16,26 @@ async function getinstagramid(pageid, access_token) {
 
 }
 
+function getinstagramidImage(pageid, access_token) {
+    var url = 'https://graph.facebook.com/v13.0/' + pageid + '?fields=profile_picture_url&access_token=' + access_token;
+    let config = {
+        method: 'get',
+        maxBodyLength: Infinity,
+        url: 'https://graph.facebook.com/v13.0/'+pageid+'?fields=profile_picture_url&access_token='+access_token,
+        headers: { }
+      };
+      
+      axios.request(config)
+      .then((response) => {
+        return response.data;
+      })
+      .catch((error) => {
+        return null
+      });
+    
+
+}
+
 exports.AddApikeysandTokenInstagram = async (req, res) => {
 
     if (req.body._id && req.body.facebookid && req.body.oauth_token && req.body._id.match(/^[0-9a-fA-F]{24}$/)) {
@@ -43,31 +63,50 @@ exports.AddApikeysandTokenInstagram = async (req, res) => {
                 getinstagramid(item.id, item.access_token).then(function (value) {
 
                     var instagrampageid = value;
-                    console.log("the instagramid is " + JSON.stringify(instagrampageid));
-                    if (instagrampageid != null) {
-                        map.set(instagrampageid, longliveacesstoken);
-                    }
+                    // if(instagrampageid != null){
+                        let config = {
+                            method: 'get',
+                            maxBodyLength: Infinity,
+                            url: 'https://graph.facebook.com/v13.0/'+value+'?fields=profile_picture_url&access_token='+longliveacesstoken,
+                            headers: { }
+                          };
+                          let profileImage= new Map();
 
-                    console.log(map)
+                          axios.request(config)
+                          .then((response) => {
+                            console.log("image",JSON.stringify(response.data.profile_picture_url));
+                        //     profileImage.set(JSON.stringify(response.data.profile_picture_url));
+                          
+                        //   console.log("dk22233",profileImage);
+                            // }
+                            // console.log("the instagramid is " + JSON.stringify(instagrampageid));
+                            if (instagrampageid != null) {
+                                map.set(instagrampageid, longliveacesstoken);
+                            }
+                            
 
-                    Brand.updateOne({
-                        "_id": req.body._id
-                    }, {
-                        'instagramcredential': map,
-                        'instagrampicture':req.body.fbpicture
-                    }, function (error, responc) {
-                        console.log(responc);
-                        
-                        // if (response.nModified == 1) {
+                            Brand.updateOne({
+                                "_id": req.body._id
+                            }, {
+                                'instagramcredential': map,
+                                'instagrampicture':JSON.stringify(response.data.profile_picture_url)
+                            }, function (error, responc) {
+                                console.log(responc);
+                                
+                                // if (response.nModified == 1) {
 
-                        //     res.json({Status: 1, msg: "updated succesfully"})
-        
-                        // } else {
-                        //     res.json({Status: 0, msg: "Not Updated/Dont tyr to Overwrite"})
-        
-                        // }
+                                //     res.json({Status: 1, msg: "updated succesfully"})
+                
+                                // } else {
+                                //     res.json({Status: 0, msg: "Not Updated/Dont tyr to Overwrite"})
+                
+                                // }
 
-                    });
+                            });
+                        })
+                        .catch((error) => {
+                        profileImage="";
+                        });
                 });
 
             });
