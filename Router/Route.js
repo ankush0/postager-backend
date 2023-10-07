@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const Brand = require("../Service/brand.js");
 const LoginService = require("../Service/login.service.js");
+const Post = require("../Service/post.js");
 const Story = require("../Service/story.js");
 const Reels = require("../Service/reels.js");
 const LoginServiceNew = require("../Service/new.login.js");
@@ -24,8 +25,8 @@ router.post('/ForgotPassward', LoginService.ForgetPassward);
 router.post('/ProfileUpdate', LoginService.UpdateAccount);  //--By Shahzama
 
 router.post('/Post_To_All_SocialMedia_Scheduling', LoginService.Post_To_All_SocialMedia_Scheduling)
-router.post('/Post_To_All_SocialMedia_Immediatly', LoginService.Post_To_All_SocialMedia_Immidiatly);
 
+router.post('/Post_To_All_SocialMedia_Immediatly', Post.Post_To_All_SocialMedia_Immidiatly);
 router.post('/Story_To_All_SocialMedia_Immediatly', Story.Story_To_All_SocialMedia_Immediatly)
 router.post('/Reels_To_All_SocialMedia_Immediatly', Reels.Reels_To_All_SocialMedia_Immediatly)
 router.post('/Show_All_Post', LoginService.Show_All_Post);

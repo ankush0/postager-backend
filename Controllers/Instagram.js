@@ -119,48 +119,22 @@ exports.AddApikeysandTokenInstagram = async (req, res) => {
 
 }
 exports.postToInsta = async (Instagramid, Content, Image,accesstoken) => {
-    console.log("data");
-
-
+    var data = "";
     var base = 'https://graph.facebook.com/';
     var ping_adr = base + Instagramid + '/media?image_url=' + Image + '&caption=' + Content + '&access_token=' + accesstoken;
-    const data= await axios
-    .post(ping_adr).catch((err) => {
-          if(err.code=='ERR_BAD_REQUEST'){
-            
-            console.log("Bad Request happen check credentials");
-          }
-          else{
-            console.log(err.code);
-          }
-        });
-    
-console.log(data);
-if(data){
-    var container_ping_adr=base+Instagramid+'/media_publish?creation_id='+data.data.id+'&access_token=' + accesstoken;;
-    console.log(container_ping_adr);
- 
- const data2= await axios.post(container_ping_adr).catch((err)=>{
- 
-     console.log(err);
-     
- });
- 
- if(data2!=null){
-    console.log("Posted on Instagram succesfull");
-     return data2.data.id;
- 
- }
- else{
- return null;
- }
+    try {
+        data = await axios.post(ping_adr);
+    } catch (error) {
+        return error;
+    }
 
-}
-else{
-    return null;
-}
-
-  
+    var container_ping_adr=base+Instagramid+'/media_publish?creation_id='+data.data.id+'&access_token=' + accesstoken;
+    try {
+        data2 = await axios.post(container_ping_adr);
+        return data2.data.id;
+    } catch (error) {
+        return error;
+    }
 }
 
 exports.storyToInsta = async (Instagramid, accesstoken, Image) => {
