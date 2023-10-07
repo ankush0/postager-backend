@@ -32,6 +32,7 @@ router.post('/Show_All_Post', LoginService.Show_All_Post);
 router.post('/Show_Scheduled_Post', LoginService.Show_Scheduled_Post);
 router.post('/Show_Live_Post', LoginService.Show_Live_Post);
 
+router.post('/fileupload', LoginServiceNew.fileupload)
 
 // router.post('/Facebook/Create',auth,LoginService.CreateFacebookPost);
 // router.post('/Instagram/Create',auth,LoginService.CreateInstagramPost);

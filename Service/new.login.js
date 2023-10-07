@@ -102,6 +102,14 @@ module.exports.UpdateBrand = async (req, res) => {
     }
 }
 
+module.exports.fileupload = async (req, res) => {
+    // Create a route to handle binary data uploads.
+    // const serverfile = require('../server.js');
+    // var upload = serverfile.upload
+
+    // // upload();
+}
+
 module.exports.Plans = async (req, res) => {
     try {
 
