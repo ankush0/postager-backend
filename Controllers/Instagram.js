@@ -184,27 +184,22 @@ exports.reelsToInsta = async (Instagramid, accesstoken, Image) => {
     console.log(Image);
     var base_url = 'https://graph.facebook.com/v18.0/'
     var url = base_url + Instagramid + '/media?media_type=REELS&caption=Hello World!&access_token='+accesstoken+'&video_url=https://8bittask.com/june/WhatsApp05.mp4';
+    
     try {
-        const data= await axios .post(url).catch((err) => {
-          if(err.code=='ERR_BAD_REQUEST'){
-            
-            console.log("Bad Request happen check credentials");
-          }
-          else{
-            console.log(err.code);
-          }
-        });
-        var post_id = data.data.id;
-    }catch(error) {
-        console.error('Error creating the page id:', error);            
+        data = await axios.post(url);
+    } catch (error) {
+        return error;
     }
 
-    console.log(post_id);
+    var container_ping_adr=base_url+Instagramid+'/media_publish?creation_id='+data.data.id+'&access_token=' + accesstoken;
+    var res = media_publish(container_ping_adr);
     
-    if(post_id)
-    {
-        var post_publish_url = base_url+Instagramid+'/media_publish?creation_id='+post_id+'&access_token=' + accesstoken;
-        media_publish(post_publish_url);
+    // console.log(post_id);
+    
+    // if(post_id)
+    // {
+    //     var post_publish_url = base_url+Instagramid+'/media_publish?creation_id='+post_id+'&access_token=' + accesstoken;
+    //     media_publish(post_publish_url);
   
         // console.log(result);
         // setInterval(
@@ -227,7 +222,7 @@ exports.reelsToInsta = async (Instagramid, accesstoken, Image) => {
         //     console.error('Error creating the post:', error.response);
                 
         // }
-    }  
+    // }  
 }
 
 
@@ -243,23 +238,31 @@ function wait5sec (waitTime) {
   
 async function media_publish (i) {
     await wait5sec(50000);  // wait function
-    console.log("dk");
     try {
-            const data= await axios .post(i).catch((err) => {
-            if(err.code=='ERR_BAD_REQUEST'){
-                
-                console.log(err.response,"Bad Request happen check credentials");
-            }
-            else{
-                console.log(err.response);
-            }
-            });
-            console.log(data);
-            return data.data.id;
-    }catch(error) {
-        console.error('Error creating the post:',error.response);
-            
+        data2 = await axios.post(i);
+        return data2.data.id;
+    } catch (error) {
+        console.log(error);
+        return error;
     }
+
+    // console.log("dk");
+    // try {
+    //     const data= await axios .post(i).catch((err) => {
+    //     if(err.code=='ERR_BAD_REQUEST'){
+            
+    //         console.log(err.response,"Bad Request happen check credentials");
+    //     }
+    //     else{
+    //         console.log(err.response);
+    //     }
+    //     });
+    //     console.log(data);
+    //     return data.data.id;
+    // }catch(error) {
+    //     return error;
+            
+    // }
 }
 
 exports.removeApikeyInstagram = async (req, res) => {

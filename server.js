@@ -58,9 +58,6 @@ const maxSize = 10 * 1000 * 1000;
 
 var upload = multer({
     storage: storage,
-    limits: {
-        fileSize: maxSize
-    },
     fileFilter: function (req, file, cb) {
 
         // Set the filetypes, it is optional

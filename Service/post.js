@@ -64,8 +64,7 @@ exports.Post_To_All_SocialMedia_Immidiatly = async (req, res) => {
             var facebookpostid = "";                
             var facebookMSG = "";
 
-            if (req.body.Platform.includes("facebook")) {
-                
+            if (req.body.Platform.includes("facebook")) {                
                 console.log("-----------Facebook------------");
                 for (let [key, value] of branddata.facebookcredential) {
                     var pageid = key;

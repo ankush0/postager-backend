@@ -35,6 +35,7 @@ exports.Reels_To_All_SocialMedia_Immediatly = async (req, res) => {
             // var Image =  'https://8bittask.com/june/WhatsApp05.mp4';
             // var Image = "https://clownfish-app-givcu.ondigitalocean.app/images/mypic-1695144114881.jpg";
             var instagrampostid = "";
+            var instagramMSG = "";
             var currentPoststack = userdata.Posts;            
 
             if (req.body.Platform.includes("instagram")) {
@@ -44,7 +45,13 @@ exports.Reels_To_All_SocialMedia_Immediatly = async (req, res) => {
                     let containerParams = new URLSearchParams();
                     var pageid = key;
                     var accesstoken = value;
-                    instagrampostid = await Instagram.reelsToInsta(pageid, accesstoken, Image );
+                    response = await Instagram.reelsToInsta(pageid, accesstoken, Image );
+                    if(response?.code=='ERR_BAD_REQUEST'){
+                        instagramMSG = response.response.data.error.message;
+                    }else{
+                        instagramMSG = "Posted on Instagram succesfull";
+                    }
+                    instagrampostid = response;
                 }
             }
 
@@ -77,7 +84,7 @@ exports.Reels_To_All_SocialMedia_Immediatly = async (req, res) => {
                     console.log(error);
                 }
             });
-            res.json({ msg: "post has been uploaded succesfully", status: 1 });
+            res.json({ msg: instagramMSG, status: 1 });
         }
         else {
             res.json({
