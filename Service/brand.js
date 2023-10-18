@@ -151,7 +151,7 @@ module.exports.pinterestBrands = async (req, res) => {
                         }
                     }
                     );
-                    console.log(response.data.items);
+                    console.log(response.data);
                     res.json({ status: 1, data: response.data.items });
                     console.log('Boards retrieved successfully!');
                     // console.log(response.data.items[0].id);

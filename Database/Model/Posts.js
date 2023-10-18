@@ -6,6 +6,7 @@ const postschema = new mong.Schema({
    facebookpostid: String,
    twitterpostid: String,
    linkedinpostid: String,
+   pinterestPostID: String,
    Createdat: Date,
    Scheduledat: Date,
    Status: String,

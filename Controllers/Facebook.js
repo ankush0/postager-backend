@@ -231,3 +231,34 @@ exports.reels = async (Instagramid, accesstoken, Image) => {
         }
     }
     
+
+    exports.postToFb = async (pageid, Content, imagePath,accessToken) => {
+
+        try {
+            const response = await axios.post(`https://graph.facebook.com/me/photos`, {
+              url: imagePath,
+              access_token: accessToken,
+            });
+        
+            return response.data;
+          } catch (error) {
+            return error.response ? error.response.data : error.message;
+          }
+
+        // var data = "";
+        // var base = 'https://graph.facebook.com/';
+        // var ping_adr = base + Instagramid + '/media?image_url=' + Image + '&caption=' + Content + '&access_token=' + accesstoken;
+        // try {
+        //     data = await axios.post(ping_adr);
+        // } catch (error) {
+        //     return error;
+        // }
+    
+        // var container_ping_adr=base+Instagramid+'/media_publish?creation_id='+data.data.id+'&access_token=' + accesstoken;
+        // try {
+        //     data2 = await axios.post(container_ping_adr);
+        //     return data2.data.id;
+        // } catch (error) {
+        //     return error;
+        // }
+    }

@@ -14,6 +14,7 @@ const serverfile = require('../server.js');
 var upload = serverfile.upload
 const Linekedin = require("../Controllers/LinkedIn");
 const Instagram = require("../Controllers/Instagram");
+const Facebook = require("../Controllers/Facebook");
 
 // constructor function to create a storage directory inside our project for all our localStorage setItem.
 var localStorage = new LocalStorage('./Localstorage');
@@ -67,24 +68,74 @@ exports.Post_To_All_SocialMedia_Immidiatly = async (req, res) => {
             if (req.body.Platform.includes("facebook")) {                
                 console.log("-----------Facebook------------");
                 for (let [key, value] of branddata.facebookcredential) {
+                    // var pageid = key;
+                    // var ACCESS_TOKEN = value;
+                    response = await Facebook.postToFb(key, req.body.Content, Image, value);
+                    // console.log(;
+                    if(response?.id){                        
+                        facebookpostid = response.id;
+                        facebookMSG = "Posted on Facebook succesfull";
+                    }else{                        
+                        facebookMSG = response.error.message;
+                    }
+                    
+                    // console.log(response);
+
+                    
+                }
+            }
+            console.log("facebookMSG",facebookMSG);
+
+            var pinterestPostID = "";                
+            var pinterestPostIDMSG = "";
+
+            if (req.body.Platform.includes("Pinterest")) {
+                console.log("-----------Pintrest------------");
+                for (let [key, value] of branddata.ptcredential) {
+                    let containerParams = new URLSearchParams();
                     var pageid = key;
-                    var ACCESS_TOKEN = value;
+                    var accesstoken = value;
+                    try {
+                        const response = await axios.post(
+                            `https://api.pinterest.com/v5/pins`,
+                            {
+                                "title": req.body.Content,
+                                "description": req.body.Content,
+                                "board_id": board_id,
+                                "media_source": {
+                                "source_type": "image_url",
+                                "url": Image
+                                }
+                            },
+                            {
+                            headers: {
+                                Authorization: `Bearer ${accesstoken}`,
+                                'Content-Type': 'application/json'
+                            }
+                            }
+                        );
+                            pinterestPostIDMSG = "Posted on Pintrest succesfull";
+                        } catch (error) {
+                            pinterestPostIDMSG = error.response;
+                        }
+
+
                     const FB = require('fb');
                     FB.setAccessToken(ACCESS_TOKEN);
                     FB.api(`/${pageid}/photos`,'POST',{ "message": Content,url: Image },
                         function (response) {
-                            console.log("kk",response);
+                            console.log("kkmmmmm",response);
                             facebookpostid= response;
                           if (response.error) {
                             facebookMSG = response.error.message;
                           }else{
-                            facebookMSG = "Posted on Facebook succesfull";
+                            
                           }
                         }
                     );
                 }
             }
-            console.log("facebookMSG",facebookpostid);
+            console.log("pinterestPostID",pinterestPostID);
 
             var post = new Post({
                 userid: req.body.userid,
@@ -106,7 +157,7 @@ exports.Post_To_All_SocialMedia_Immidiatly = async (req, res) => {
                     console.log(error);
                 }
             });
-            res.json({ msg: instagramMSG+"<br />"+facebookMSG, status: 1 });
+            res.json({ msg: instagramMSG+","+facebookMSG+","+pinterestPostIDMSG, status: 1 });
             
         }
         else {
