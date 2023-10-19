@@ -146,7 +146,7 @@ exports.removeApikeyFacebook = async (req, res) => {
     }
     }
 
-exports.reels = async (Instagramid, accesstoken, Image) => {
+exports.reels = async (Instagramid, accesstoken, Image, Content) => {
    
         console.log(Image);
         var base_url = 'https://graph.facebook.com/v18.0/'
@@ -171,7 +171,7 @@ exports.reels = async (Instagramid, accesstoken, Image) => {
         if(post_id)
         {
             var post_publish_url = 'https://rupload.facebook.com/video-upload/v18.0/'+post_id;
-            upload_hosted(post_publish_url,accesstoken,Image,post_id);
+            upload_hosted(post_publish_url,accesstoken,Image,post_id,Content);
         }  
     }
     
@@ -187,7 +187,7 @@ exports.reels = async (Instagramid, accesstoken, Image) => {
       }
       
     
-    async function upload_hosted (i,accesstoken,Image,post_id) {
+    async function upload_hosted (i,accesstoken,Image,post_id,Content) {
         await wait5sec(2000);  // wait function
         console.log("dk",accesstoken);
 
@@ -203,7 +203,7 @@ exports.reels = async (Instagramid, accesstoken, Image) => {
           
           axios.request(config)
           .then((response) => {
-            var post_publish_url = 'https://graph.facebook.com/v17.0/me/video_reels?access_token='+accesstoken+'&video_id='+post_id+'&upload_phase=finish&video_state=PUBLISHED&description=Description text goes here&title=Title goes here';
+            var post_publish_url = 'https://graph.facebook.com/v17.0/me/video_reels?access_token='+accesstoken+'&video_id='+post_id+'&upload_phase=finish&video_state=PUBLISHED&description='+Content+'&title='+Content;
             media_publish(post_publish_url);
           })
           .catch((error) => {

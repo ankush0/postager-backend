@@ -45,7 +45,7 @@ exports.Reels_To_All_SocialMedia_Immediatly = async (req, res) => {
                     let containerParams = new URLSearchParams();
                     var pageid = key;
                     var accesstoken = value;
-                    response = await Instagram.reelsToInsta(pageid, accesstoken, Image );
+                    response = await Instagram.reelsToInsta(pageid, accesstoken, Image, req.body.Content );
                     if(response?.code=='ERR_BAD_REQUEST'){
                         instagramMSG = response.response.data.error.message;
                     }else{
@@ -61,7 +61,7 @@ exports.Reels_To_All_SocialMedia_Immediatly = async (req, res) => {
                     let containerParams = new URLSearchParams();
                     var pageid = key;
                     var accesstoken = value;
-                    instagrampostid = await Facebook.reels(pageid, accesstoken, Image );
+                    instagrampostid = await Facebook.reels(pageid, accesstoken, Image, req.body.Content );
                 }
             }
             
