@@ -183,7 +183,7 @@ exports.reelsToInsta = async (Instagramid, accesstoken, Image, Content) => {
    
     console.log(Image);
     var base_url = 'https://graph.facebook.com/v18.0/'
-    var url = base_url + Instagramid + '/media?media_type=REELS&caption='+Content+'&access_token='+accesstoken+'&video_url='+Image;
+    var url = base_url + Instagramid + '/media?media_type=VIDEO&caption='+Content+'&access_token='+accesstoken+'&video_url='+Image;
     
     try {
         data = await axios.post(url);
