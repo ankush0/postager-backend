@@ -43,7 +43,7 @@ exports.Story_To_All_SocialMedia_Immediatly = async (req, res) => {
                     let containerParams = new URLSearchParams();
                     var pageid = key;
                     var accesstoken = value;
-                    instagrampostid = await Instagram.storyToInsta(pageid, accesstoken, Image );
+                    instagrampostid = await Instagram.storyToInsta(pageid, accesstoken, Image, Content );
                 }
             }
 

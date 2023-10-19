@@ -137,11 +137,11 @@ exports.postToInsta = async (Instagramid, Content, Image,accesstoken) => {
     }
 }
 
-exports.storyToInsta = async (Instagramid, accesstoken, Image) => {
+exports.storyToInsta = async (Instagramid, accesstoken, Image, Content) => {
    
     console.log(Image);
     var base_url = 'https://graph.facebook.com/v18.0/'
-    var url = base_url + Instagramid + '/media?media_type=STORIES&caption=Hello World!&access_token='+accesstoken+'&image_url='+Image;
+    var url = base_url + Instagramid + '/media?media_type=STORIES&caption='+Content+'&access_token='+accesstoken+'&image_url='+Image;
     try {
         const data= await axios .post(url).catch((err) => {
           if(err.code=='ERR_BAD_REQUEST'){
@@ -179,11 +179,11 @@ exports.storyToInsta = async (Instagramid, accesstoken, Image) => {
     }  
 }
 
-exports.reelsToInsta = async (Instagramid, accesstoken, Image) => {
+exports.reelsToInsta = async (Instagramid, accesstoken, Image, Content) => {
    
     console.log(Image);
     var base_url = 'https://graph.facebook.com/v18.0/'
-    var url = base_url + Instagramid + '/media?media_type=REELS&caption=Hello World!&access_token='+accesstoken+'&video_url=https://8bittask.com/june/WhatsApp05.mp4';
+    var url = base_url + Instagramid + '/media?media_type=REELS&caption='+Content+'&access_token='+accesstoken+'&video_url=https://8bittask.com/june/WhatsApp05.mp4';
     
     try {
         data = await axios.post(url);
