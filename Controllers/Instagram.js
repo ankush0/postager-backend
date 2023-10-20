@@ -143,37 +143,20 @@ exports.storyToInsta = async (Instagramid, accesstoken, Image, Content) => {
     var base_url = 'https://graph.facebook.com/v18.0/'
     var url = base_url + Instagramid + '/media?media_type=STORIES&caption='+Content+'&access_token='+accesstoken+'&image_url='+Image;
     try {
-        const data= await axios .post(url).catch((err) => {
-          if(err.code=='ERR_BAD_REQUEST'){
-            
-            console.log("Bad Request happen check credentials");
-          }
-          else{
-            console.log(err.code);
-          }
-        });
+        data = await axios.post(url);
         var post_id = data.data.id;
-    }catch(error) {
-        console.error('Error creating the post:', error.response.data);            
+    } catch (error) {
+        return error;
     }
-
     
     if(post_id)
     {
         var post_publish_url = base_url+Instagramid+'/media_publish?creation_id='+post_id+'&access_token=' + accesstoken;
         try {
-                const data= await axios .post(post_publish_url).catch((err) => {
-                if(err.code=='ERR_BAD_REQUEST'){
-                    
-                    console.log("Bad Request happen check credentials");
-                }
-                else{
-                    console.log(err.code);
-                }
-                });
-                return data.data.id;
+            data2 = await axios.post(post_publish_url);
+            return data2.data.id;
         }catch(error) {
-            console.error('Error creating the post:', error.response);
+            return error;
                 
         }
     }  
@@ -181,7 +164,7 @@ exports.storyToInsta = async (Instagramid, accesstoken, Image, Content) => {
 
 exports.reelsToInsta = async (Instagramid, accesstoken, Image, Content) => {
    
-    console.log(Image);
+    // console.log(Image);
     var base_url = 'https://graph.facebook.com/v18.0/'
     var url = base_url + Instagramid + '/media?media_type=VIDEO&caption='+Content+'&access_token='+accesstoken+'&video_url='+Image;
     
@@ -193,7 +176,9 @@ exports.reelsToInsta = async (Instagramid, accesstoken, Image, Content) => {
 
     var container_ping_adr=base_url+Instagramid+'/media_publish?creation_id='+data.data.id+'&access_token=' + accesstoken;
     var res = media_publish(container_ping_adr);
-    
+    if(res){
+        return res;
+    }
     // console.log(post_id);
     
     // if(post_id)

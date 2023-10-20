@@ -146,24 +146,16 @@ exports.removeApikeyFacebook = async (req, res) => {
     }
     }
 
-exports.reels = async (Instagramid, accesstoken, Image, Content) => {
+  exports.reels = async (Instagramid, accesstoken, Image, Content) => {
    
         console.log(Image);
         var base_url = 'https://graph.facebook.com/v18.0/'
         var url = base_url +'me/video_reels?access_token='+accesstoken+'&upload_phase=start'
         try {
-            const data= await axios .post(url).catch((err) => {
-              if(err.code=='ERR_BAD_REQUEST'){
-                
-                console.log("Bad Request happen check credentials");
-              }
-              else{
-                console.log(err.code);
-              }
-            });
-            var post_id = data.data.video_id;
+          data = await axios.post(url);
+          var post_id = data.data.video_id;
         }catch(error) {
-            console.error('Error creating the page id:', error);            
+            return error;            
         }
     
         console.log("facebook id",post_id);
@@ -171,7 +163,10 @@ exports.reels = async (Instagramid, accesstoken, Image, Content) => {
         if(post_id)
         {
             var post_publish_url = 'https://rupload.facebook.com/video-upload/v18.0/'+post_id;
-            upload_hosted(post_publish_url,accesstoken,Image,post_id,Content);
+            var res = upload_hosted(post_publish_url,accesstoken,Image,post_id,Content);
+            if(res){
+              return res;
+            }
         }  
     }
     
@@ -188,8 +183,7 @@ exports.reels = async (Instagramid, accesstoken, Image, Content) => {
       
     
     async function upload_hosted (i,accesstoken,Image,post_id,Content) {
-        await wait5sec(2000);  // wait function
-        console.log("dk",accesstoken);
+        await wait5sec(20000);  // wait function
 
         let config = {
             method: 'post',
@@ -201,32 +195,27 @@ exports.reels = async (Instagramid, accesstoken, Image, Content) => {
             }
           };
           
-          axios.request(config)
-          .then((response) => {
+          axios.request(config).then((response) => {
             var post_publish_url = 'https://graph.facebook.com/v17.0/me/video_reels?access_token='+accesstoken+'&video_id='+post_id+'&upload_phase=finish&video_state=PUBLISHED&description='+Content+'&title='+Content;
-            media_publish(post_publish_url);
+            var res = media_publish(post_publish_url);
+            if(res){
+              return res;
+            }
           })
           .catch((error) => {
-            console.log(error);
+            return error;
           });
     }
+
+
       async function media_publish (i) {
         await wait5sec(50000);  // wait function
         console.log("dk");
         try {
-            const data= await axios .post(i).catch((err) => {
-            if(err.code=='ERR_BAD_REQUEST'){
-                
-                console.log(err.response,"Bad Request happen check credentials");
-            }
-            else{
-                console.log(err.response);
-            }
-            });
-            console.log("post success",data);
-            return data.data.id;
+            data2 = await axios.post(i);
+            return data2.data.id;
         }catch(error) {
-            console.error('Error creating the post:',error.response);
+            return error;
                 
         }
     }

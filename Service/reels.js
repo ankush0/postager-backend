@@ -46,6 +46,7 @@ exports.Reels_To_All_SocialMedia_Immediatly = async (req, res) => {
                     var pageid = key;
                     var accesstoken = value;
                     response = await Instagram.reelsToInsta(pageid, accesstoken, Image, req.body.Content );
+                    console.log(response);
                     if(response?.code=='ERR_BAD_REQUEST'){
                         instagramMSG = response.response.data.error.message;
                     }else{
@@ -55,13 +56,23 @@ exports.Reels_To_All_SocialMedia_Immediatly = async (req, res) => {
                 }
             }
 
+            var facebookpostid = "";                
+            var facebookMSG = "";
+
             if (req.body.Platform.includes("facebook")) {
                 console.log("-----------facebook reels------------");
                 for (let [key, value] of branddata.facebookcredential) {
                     let containerParams = new URLSearchParams();
                     var pageid = key;
                     var accesstoken = value;
-                    instagrampostid = await Facebook.reels(pageid, accesstoken, Image, req.body.Content );
+                    response = await Facebook.reels(pageid, accesstoken, Image, req.body.Content );
+                    console.log(response);
+                    if(response?.code=='ERR_BAD_REQUEST'){
+                        facebookMSG = response.response.data.error.message;
+                    }else{
+                        facebookMSG = "Posted on Facebook succesfull";
+                    }
+                    facebookpostid = response;
                 }
             }
             
@@ -84,7 +95,7 @@ exports.Reels_To_All_SocialMedia_Immediatly = async (req, res) => {
                     console.log(error);
                 }
             });
-            res.json({ msg: instagramMSG, status: 1 });
+            res.json({ msg: instagramMSG+","+facebookMSG, status: 1 });
         }
         else {
             res.json({
