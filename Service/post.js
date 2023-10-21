@@ -99,12 +99,13 @@ exports.Post_To_All_SocialMedia_Immidiatly = async (req, res) => {
                         const response = await axios.post(
                             `https://api.pinterest.com/v5/pins`,
                             {
-                                "title": req.body.Content,
+                                "title": req.body.title,
                                 "description": req.body.Content,
-                                "board_id": board_id,
+                                "board_id": req.body.board,
                                 "media_source": {
                                 "source_type": "image_url",
-                                "url": Image
+                                "url": Image,
+                                "link": req.body.url,
                                 }
                             },
                             {
@@ -116,23 +117,9 @@ exports.Post_To_All_SocialMedia_Immidiatly = async (req, res) => {
                         );
                             pinterestPostIDMSG = "Posted on Pintrest succesfull";
                         } catch (error) {
-                            pinterestPostIDMSG = error.response;
-                        }
-
-
-                    const FB = require('fb');
-                    FB.setAccessToken(ACCESS_TOKEN);
-                    FB.api(`/${pageid}/photos`,'POST',{ "message": Content,url: Image },
-                        function (response) {
-                            console.log("kkmmmmm",response);
-                            facebookpostid= response;
-                          if (response.error) {
-                            facebookMSG = response.error.message;
-                          }else{
-                            
-                          }
-                        }
-                    );
+                            // console.log(error.response.data);
+                            pinterestPostIDMSG = error.response.data.message;
+                        }                    
                 }
             }
             console.log("pinterestPostID",pinterestPostID);
