@@ -1916,6 +1916,11 @@ latest-version@^5.0.0:
   dependencies:
     package-json "^6.3.0"
 
+linkedin-api@^0.0.1:
+  version "0.0.1"
+  resolved "https://registry.npmjs.org/linkedin-api/-/linkedin-api-0.0.1.tgz"
+  integrity sha512-Rz1yk1Qg3Ogo++C+2j4n5AzqYHI4o8Z/QMHCrvnS/uXlI1iVGF31wIjUmyobWuhEwHKDD39crtTl5G/EbmBEVA==
+
 lodash.includes@^4.3.0:
   version "4.3.0"
   resolved "https://registry.npmjs.org/lodash.includes/-/lodash.includes-4.3.0.tgz"

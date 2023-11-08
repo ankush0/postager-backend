@@ -38,12 +38,28 @@ exports.Post_To_All_SocialMedia_Immidiatly = async (req, res) => {
 
                 if (err) throw err;
             })        
-            // var Image =  process.env.IMG_URL + req?.file?.filename;
+            var Image =  process.env.IMG_URL + req?.file?.filename;
             // var Image =  'https://8bittask.com/june/WhatsApp05.mp4';
-            var Image = "https://8bittask.com/june/pinterest.png";
+            // var Image = "https://8bittask.com/june/pinterest.png";
             const fs = require('fs').promises;
             const sharp = require('sharp');
             const BYTES_PER_MB = 1024 ** 2;
+
+            const Snapchat = require('snapchat');
+
+// Create a new instance of the Snapchat class.
+const snapchat = new Snapchat({
+  username: 'Anvyo',
+  password: '96900659al'
+});
+
+// Post a new story.
+const story = await snapchat.postStory({
+  media: new Buffer(fs.readFileSync('image.jpg'))
+});
+
+// Get information about an existing story.
+const storyInfo = await snapchat.getStory(story.id);
 
             // paste following snippet inside of respective `async` function
             // const fileStats = await fs.stat("uploads/"+req?.file?.filename);
@@ -197,6 +213,96 @@ exports.Post_To_All_SocialMedia_Immidiatly = async (req, res) => {
                 }else{
                     const { data: createdTweet } = await client.v2.tweet(req.body.Content);
                     console.log('Tweet', createdTweet.id, ':', createdTweet.text);
+                }
+            }
+
+            if (req.body.Platform.includes("Linkedinn")) {
+                console.log("-----------Linkedin------------");
+                for (let [key, value] of branddata.linkdinCredential) {
+                    console.log(value);
+                    let containerParams = new URLSearchParams();
+                    var pageid = key;
+                    var accessToken = value;
+                    try {
+                        const response = await axios.get('https://api.linkedin.com/v2/organizations', {
+                            headers: {
+                                'Authorization': `Bearer ${accessToken}`
+                            }
+                        });
+                
+                        const organizationId = response.data.elements[0].id; // Assuming you want the first organization's ID
+                        res.send(`Organization ID: ${organizationId}`);
+                    } catch (error) {
+                        console.error(error);
+                        res.status(500).send('Error fetching organization ID');
+                    }
+                    
+//   const postUrl = 'https://api.linkedin.com/v2/me';
+                      
+//   const headers = {
+//     'Authorization': `Bearer ${accessToken}`,
+//     'Content-Type': 'application/json',
+//   };
+
+  
+//   try {
+//     const response = await axios.get(postUrl, { headers });
+//     console.log('Posted to LinkedIn:', response.data);
+//   } catch (error) {
+//     console.error(error);
+//   }
+
+//   Posted to LinkedIn: {
+//     localizedLastName: 'A',
+//     profilePicture: { displayImage: 'urn:li:digitalmediaAsset:C4D03AQGrcjPfsctuTw' },
+//     firstName: {
+//       localized: { en_US: 'Hero' },
+//       preferredLocale: { country: 'US', language: 'en' }
+//     },
+//     vanityName: 'hero-a-b865391ba',
+//     lastName: {
+//       localized: { en_US: 'A' },
+//       preferredLocale: { country: 'US', language: 'en' }
+//     },
+//     localizedHeadline: 'PHP Developer at SSAK Solution Services - India',
+//     id: 'EUabXZ8XKN',
+//     headline: {
+//       localized: { en_US: 'PHP Developer at SSAK Solution Services - India' },
+//       preferredLocale: { country: 'US', language: 'en' }
+//     },
+//     localizedFirstName: 'Hero'
+//   }
+// const postContent = {
+                    //     author: 'urn:li:person:EUabXZ8XKN', // Your LinkedIn member ID
+                    //     lifecycleState: 'PUBLISHED',
+                    //     specificContent: {
+                    //       'com.linkedin.ugc.ShareContent': {
+                    //         shareCommentary: {
+                    //           text: req.body.Content,
+                    //         },
+                    //         shareMediaCategory: 'NONE',
+                    //       },
+                    //     },
+                    //     visibility: {
+                    //       'com.linkedin.ugc.MemberNetworkVisibility': 'CONNECTIONS',
+                    //     },
+                    //   };
+                      
+                    //   const postUrl = 'https://api.linkedin.com/v2/me';
+                      
+                    //   const headers = {
+                    //     'Authorization': `Bearer ${accessToken}`,
+                    //     'Content-Type': 'application/json',
+                    //   };
+
+                      
+                    //   try {
+                    //     const response = await axios.get(postUrl, { headers });
+                    //     console.log('Posted to LinkedIn:', response.data);
+                    //   } catch (error) {
+                    //     console.error(error);
+                    //   }
+                      
                 }
             }
 
