@@ -45,21 +45,21 @@ exports.Post_To_All_SocialMedia_Immidiatly = async (req, res) => {
             const sharp = require('sharp');
             const BYTES_PER_MB = 1024 ** 2;
 
-            const Snapchat = require('snapchat');
+            // const Snapchat = require('snapchat');
 
 // Create a new instance of the Snapchat class.
-const snapchat = new Snapchat({
-  username: 'Anvyo',
-  password: '96900659al'
-});
+// const snapchat = new Snapchat({
+//   username: 'Anvyo',
+//   password: '96900659al'
+// });
 
-// Post a new story.
-const story = await snapchat.postStory({
-  media: new Buffer(fs.readFileSync('image.jpg'))
-});
+// // Post a new story.
+// const story = await snapchat.postStory({
+//   media: new Buffer(fs.readFileSync('image.jpg'))
+// });
 
-// Get information about an existing story.
-const storyInfo = await snapchat.getStory(story.id);
+// // Get information about an existing story.
+// const storyInfo = await snapchat.getStory(story.id);
 
             // paste following snippet inside of respective `async` function
             // const fileStats = await fs.stat("uploads/"+req?.file?.filename);
