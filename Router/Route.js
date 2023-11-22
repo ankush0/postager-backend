@@ -44,6 +44,7 @@ router.post('/fileupload', LoginServiceNew.fileupload)
 
 // ----------->>>>>>>><<<<<<<<<------------------//
 router.post('/stripe/generate/clientSecret', Stripe.GenerateKey);
+router.post('/stripe-url', Stripe.UrlGenerate);
 
 router.post('/AddNewBrand', Brand.AddNewBrand);
 router.post('/ShowAllBrands', Brand.ShowAllBrands);
