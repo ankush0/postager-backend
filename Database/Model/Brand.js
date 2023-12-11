@@ -33,6 +33,7 @@ const Brandschema = new mong.Schema({
         required: true,
         default: '1-1-2040',
     },
+    security_key: String,
     // tokens: [{
     //     token: {
     //         type: String,

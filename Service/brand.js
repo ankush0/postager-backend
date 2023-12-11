@@ -89,8 +89,8 @@ module.exports.UpdateBrand = async (req, res) => {
                 break;
             case "subscription": if (req.body.type) {                
                 var date = new Date(); // Now
-                if(req.body.type==2){
-                    date.setDate(date.getDate() + 30)
+                if(req.body.type=="2"){
+                    date.setDate(date.getDate() + 365)
                     const updatedBrand = await Brand.updateOne({ _id: req.body._id }, { $set: { planName: "Yearly", planType: "Yearly", planPrice: "60", planExpiry: date.toISOString().split('T')[0] } })
                     console.log(updatedBrand);
                     if (updatedBrand.nModified > 0) {
@@ -99,7 +99,7 @@ module.exports.UpdateBrand = async (req, res) => {
                         res.json({ status: 1, message: "Brand couldn't be updated" });
                     }
                 }else{
-                    date.setDate(date.getDate() + 365)
+                    date.setDate(date.getDate() + 30)
                     const updatedBrand = await Brand.updateOne({ _id: req.body._id }, { $set: { planName: "Montly", planType: "Montly", planPrice: "5", planExpiry: date.toISOString().split('T')[0] } })
                     
                     if (updatedBrand.nModified > 0) {
