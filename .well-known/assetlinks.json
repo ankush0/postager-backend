@@ -1,0 +1,14 @@
+[
+    {
+      "relation": [
+        "delegate_permission/common.handle_all_urls"
+      ],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "com.postager",
+        "sha256_cert_fingerprints": [
+          "E0:F5:E5:A7:8D:B0:70:F7:3D:6A:C8:D6:FE:6C:95:32:2C:61:0D:22:60:0F:47:A3:77:F9:FC:27:D3:8B:ED:7F"
+        ]
+      }
+    }
+  ]
