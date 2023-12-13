@@ -211,6 +211,83 @@ exports.Login = async (req, res) => {
 
 
 }
+
+exports.googleLogin = async (req, res) => {
+    if (req.body.name && req.body.email) {
+        user.find({
+            email: req.body.email
+        }, async function (err, result) {
+            if (result.length == 0) {
+                var newuser = new user({
+                    name: req.body.name,
+                    email: req.body.email,
+                    passward: "Dheeraj@`8931",
+                    facebookid: "",
+                    facebooktoken: "",
+                    Instagramid: "",
+                    Instagramtoken: "",
+                    Posts: [],
+                    AccessTo: []
+                });
+                var dat = await newuser.save();
+                console.log(dat);
+                data = {
+                    email: req.body.email,
+                    passward: req.body.passward
+                };
+                user.findOne(data, function (err, user) {
+                    res.json({
+                        access_token: generateAccessToken(user),
+                        data: user,
+                        status: 1,
+                        msg: "success"
+                    });
+                })
+
+            } else {
+                data = {
+                    email: req.body.email,
+                };
+                user.findOne(data, function (err, user) {
+            
+                    if (!user) {
+                        res.json({
+                            status: 0,
+                            msg: "not found"
+                        });
+                    }
+                    if (err) {
+                        res.json({
+                            status: 0,
+                            message: err
+                        });
+                    }
+        
+        
+        
+        
+                    res.json({
+                        access_token: generateAccessToken(user),
+                        data: user,
+                        message: " success"
+                    });
+                })
+
+            }
+
+
+
+        })
+
+    }
+    else {
+        res.json({
+            status: 0,
+            mag: "Enter valid Credential"
+        })
+    }
+}
+
 exports.Signup = async (req, res) => {
     if (req.body.name && req.body.address && req.body.passward && req.body.mobile && req.body.email) {
         user.find({

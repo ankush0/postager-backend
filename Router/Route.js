@@ -18,6 +18,8 @@ const Instagram = require('../Controllers/Instagram');
 var auth = require('../Service/auth');
 
 router.post('/Signin', LoginService.Login);
+router.post('/googleLogin', LoginService.googleLogin);
+
 router.post('/Signup', LoginService.Signup);
 router.post('/VerifyCode', LoginService.VerifyCode);
 router.post('/NewPassward', LoginService.NewPassward);
