@@ -37,9 +37,9 @@ exports.Post_To_All_SocialMedia_Scheduling_Post = async (req, res) => {
         })
 
 
-        // var Image =  process.env.IMG_URL + req?.file?.filename;
+        var Image =  process.env.IMG_URL + req?.file?.filename;
         // var Image =  'https://8bittask.com/june/WhatsApp05.mp4';
-        var Image = "https://8bittask.com/june/pinterest.png";
+        // var Image = "https://8bittask.com/june/pinterest.png";
 
         var Content = req.body.Content;
         var post = new Post({
