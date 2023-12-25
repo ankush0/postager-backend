@@ -1345,20 +1345,39 @@ exports.Post_To_All_SocialMedia_Scheduling = async (req, res) => {
 
 exports.Show_All_Post = async (req, res) => {
     if (req.body.userid && req.body.userid.match(/^[0-9a-fA-F]{24}$/)) {
-        Post.find({
+        // Get today's date
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // Set hours, minutes, seconds, and milliseconds to 0
+         // Create a query based on the timestamp field
+        const currentTime = new Date(); // replace with your current timestamp
+        const previousTime = new Date(currentTime.getTime() - (124 * 60 * 60 * 1000));
+
+        const next365Days = new Date(today);
+        next365Days.setDate(today.getDate() + 365);
+
+        const firstArrayData = await Post.find({
+            Scheduledat : { $lt: currentTime, $gte: previousTime },
             userid: req.body.userid,
             Brand: req.body.brandId
-        }, function (err, result) {
-            if (!err) {
-                res.json({
-                    status: 1,
-                    data: result
-                });
-            }
-            else {
-                res.send("internal server error");
-            }
-        })
+        });
+
+        // Fetch data from the secondArray collection for today
+        const secondArrayData = await Post.find({
+            Scheduledat : { $lt: next365Days, $gte: currentTime },
+            userid: req.body.userid,
+            Brand: req.body.brandId
+        });
+
+        // Do something with the data
+        // console.log('Data from firstArray:', firstArrayData);
+        // console.log('Data from secondArray:', secondArrayData);
+
+
+        res.json({
+            status: 1,
+            data: firstArrayData,
+            secondArrayData: secondArrayData
+        });
     }
     else {
         res.json({
