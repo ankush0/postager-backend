@@ -75,10 +75,12 @@ module.exports.ShowAllBrands = async (req, res) => {
 
 module.exports.UpdateBrand = async (req, res) => {
     try {
-
+        var Image =  process.env.IMG_URL + req?.file?.filename;
+        
+        console.log(Image);
         switch (req.body.updateBrand) {
             case "save": if (req.body.name) {
-                const updatedBrand = await Brand.updateOne({ _id: req.body._id }, { $set: { name: req.body.name } })
+                const updatedBrand = await Brand.updateOne({ _id: req.body._id }, { $set: { image: Image, name: req.body.name } })
                 console.log(updatedBrand);
                 if (updatedBrand.nModified > 0) {
                     res.json({ status: 1, message: "Brand updated successfully" });
