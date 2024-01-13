@@ -38,9 +38,9 @@ exports.Post_To_All_SocialMedia_Immidiatly = async (req, res) => {
 
                 if (err) throw err;
             })        
-            var Image =  process.env.IMG_URL + req?.file?.filename;
+            // var Image =  process.env.IMG_URL + req?.file?.filename;
             // var Image =  'https://8bittask.com/june/WhatsApp05.mp4';
-            // var Image = "https://8bittask.com/june/pinterest.png";
+            var Image = "https://8bittask.com/june/pinterest.png";
             const fs = require('fs').promises;
             const sharp = require('sharp');
             const BYTES_PER_MB = 1024 ** 2;

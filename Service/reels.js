@@ -32,6 +32,7 @@ exports.Reels_To_All_SocialMedia_Immediatly = async (req, res) => {
                 if (err) throw err;
             })
             var Image =  process.env.IMG_URL + req?.file?.filename;
+            
             // var Image =  'https://8bittask.com/june/WhatsApp05.mp4';
             // var Image = "https://clownfish-app-givcu.ondigitalocean.app/images/mypic-1695144114881.jpg";
             var instagrampostid = "";

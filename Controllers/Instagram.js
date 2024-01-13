@@ -166,14 +166,14 @@ exports.reelsToInsta = async (Instagramid, accesstoken, Image, Content) => {
    
     // console.log(Image);
     var base_url = 'https://graph.facebook.com/v18.0/'
-    var url = base_url + Instagramid + '/media?media_type=VIDEO&caption='+Content+'&access_token='+accesstoken+'&video_url='+Image;
+    var url = base_url + Instagramid + '/media?media_type=REELS&caption='+Content+'&access_token='+accesstoken+'&video_url='+Image;
     
     try {
         data = await axios.post(url);
     } catch (error) {
         return error;
     }
-
+    console.log(data.data.id);
     var container_ping_adr=base_url+Instagramid+'/media_publish?creation_id='+data.data.id+'&access_token=' + accesstoken;
     var res = media_publish(container_ping_adr);
     if(res){
