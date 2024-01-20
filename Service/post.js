@@ -216,7 +216,7 @@ exports.Post_To_All_SocialMedia_Immidiatly = async (req, res) => {
                 }
             }
 
-            if (req.body.Platform.includes("Linkedinn")) {
+            if (req.body.Platform.includes("Linkedin")) {
                 console.log("-----------Linkedin------------");
                 for (let [key, value] of branddata.linkdinCredential) {
                     console.log(value);
