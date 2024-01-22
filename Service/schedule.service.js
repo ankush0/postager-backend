@@ -14,46 +14,13 @@ const serverfile = require("../server.js");
 var upload = serverfile.upload;
 const Linekedin = require("../Controllers/LinkedIn");
 const Instagram = require("../Controllers/Instagram");
-const { post_to_pintrest } = require("../Controllers/Pinterest");
+const { post_to_pinterest } = require("../Controllers/Pinterest");
+const { getAccessToken, getFbId, postToFacebook } = require("../Controllers/Facebook.js");
 
 // constructor function to create a storage directory inside our project for all our localStorage setItem.
 var localStorage = new LocalStorage("./Localstorage");
 
-const posttoFacebookScheduled = async (
-  pageid,
-  Image,
-  Content,
-  accesstoken,
-  postid
-) => {
-  var base = "https://graph.facebook.com/";
-  var ping_adr =
-    base +
-    pageid +
-    "/feed?photos?url=" +
-    Image +
-    "&message=" +
-    Content +
-    "&access_token=" +
-    accesstoken;
-  const facebookdata = await axios.post(ping_adr).catch((err) => {
-    localStorage.setItem("Facebook" + postid, err);
-    console.error(err);
-  });
 
-  if (facebookdata) {
-    await Post.findByIdAndUpdate(postid, {
-      facebookpostid: facebookdata.data.id,
-      Status: "Live",
-    });
-    localStorage.removeItem("Facebook" + postid);
-    console.log(
-      `Post with id ${postid} has been uploaded succesfully on Facebook`
-    );
-  } else {
-    console.log(`Post with id ${postid} could not be posted on Facbeook`);
-  }
-};
 
 
 
@@ -66,7 +33,7 @@ exports.Post_To_All_SocialMedia_Scheduling_Post = async (req, res) => {
     req.body.Brand
   ) {
     try {
-      var userdata = await user.findById(req.body.userid);
+      const userdata = await user.findById(req.body.userid);
 
       const brandData = await Brand.findById(req.body.Brand);
 
@@ -81,38 +48,32 @@ exports.Post_To_All_SocialMedia_Scheduling_Post = async (req, res) => {
         Brand: req.body.Brand,
       });
       var post_saved = await post.save();
+
       if (!userdata) {
         res.json({
           status: 0,
-          msg: "check your Credentials or internal server error",
+          msg: "Check your Credentials before posting",
         });
       }
-      if (req.body.Platform.includes("Facebook")) {
-        localStorage.setItem(
-          "Facebook " + post_saved._id,
-          "Post Scheduled at " + date + "current timing" + new Date()
-        );
+
+      if (req.body.Platform.includes("facebook")) {
         schedule.scheduleJob(req.body.Date, async function () {
-          posttoFacebookScheduled(
-            userdata.facebookid,
-            Image,
-            Content,
-            userdata.facebooktoken,
+          postToFacebook(
+            getFbId(brandData),
+            req.body.mypic,
+            req.body.Content,
+            getAccessToken(brandData),
             post_saved._id
           );
         });
       }
 
       if (req.body.Platform.includes("Pinterest")) {
-        const { ptcredential } = brandData;
-
-        const pinterest_access_token = ptcredential.values().next().value;
-
         const { title, board, content, url, mypic } = req.body;
 
         schedule.scheduleJob(new Date(req.body.Date), async function () {
-        post_to_pintrest(
-            pinterest_access_token,
+        post_to_pinterest(
+            brandData,
             title,
             content,
             board,
@@ -121,13 +82,10 @@ exports.Post_To_All_SocialMedia_Scheduling_Post = async (req, res) => {
           );
         });
 
-        console.log(
-          "Pintrest" + post_saved._id,
-          " Post Scheduled at " + req.body.Date + "current timing" + new Date()
-        );
+        console.log(`Pinterest Post with Id: ${post_saved.id} scheduled for ${req.body.Date}`);
 
         localStorage.setItem(
-          "Pintrest",
+          "Pinterest",
           "Post Scheduled at " + req.body.Date + "current timing" + new Date()
         );
       }

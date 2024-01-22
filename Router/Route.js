@@ -65,7 +65,6 @@ router.post('/UpdateBrand', Brand.UpdateBrand);
 
 router.get('/Plans', LoginServiceNew.Plans);  
 
-router.post('/pinterestBrands', Brand.pinterestBrands);
 // router.post('/GetAuthLink/Linkedin', Linkedin.GetAuthLink);
 // router.get('/LinkedIn/callback', Linkedin.Callback);
 
@@ -81,7 +80,11 @@ router.post('/removeApikeyFacebook', Facebook.removeApikeyFacebook);
 router.post('/AddApikeysandTokenInstagram', Instagram.AddApikeysandTokenInstagram);
 router.post('/removeApikeyInstagram', Instagram.removeApikeyInstagram);
 
+
 router.post('/AddApikeysandTokenPintrest', Pinterest.AddApikeysandTokenPintrest);
+router.post('/getPinterestBoards', Pinterest.get_boards)
+
+
 router.post('/AddTwitterToken', Twitter.AddTwitterToken);
 router.post('/removeTwitterToken', Twitter.removeTwitterToken);
 

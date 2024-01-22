@@ -15,7 +15,8 @@ var upload = serverfile.upload
 const Linekedin = require("../Controllers/LinkedIn");
 const Instagram = require("../Controllers/Instagram");
 const Facebook = require("../Controllers/Facebook");
-const { post_to_pintrest } = require("../Controllers/Pinterest");
+const { post_to_pinterest } = require("../Controllers/Pinterest");
+const { postToFacebook, getFbId, getAccessToken } = require("../Controllers/Facebook");
 
 // constructor function to create a storage directory inside our project for all our localStorage setItem.
 var localStorage = new LocalStorage('./Localstorage');
@@ -29,134 +30,50 @@ exports.Post_To_All_SocialMedia_Immidiatly = async (req, res) => {
           
         if (req.body.Platform && req.body.userid.match(/^[0-9a-fA-F]{24}$/) && req.body.Content && req.body.Brand && req.body.Brand.match(/^[0-9a-fA-F]{24}$/)) {
 
-            const userdata = await user.findById(req.body.userid)
-
             const brandData = await Brand.findById(req.body.Brand);
+
+            const post = new Post({
+                userid: req.body.userid,
+                Createdat: new Date(),
+                Scheduledat: new Date(),
+                Status: "Live",
+                Platform: req.body.Platform,
+                Content: req.body.Content,
+                Image: req.body.mypic,
+                Brand: req.body.Brand,
+              });
             
-            var Image = "https://8bittask.com/june/pinterest.png";
-            const fs = require('fs').promises;
-            const sharp = require('sharp');
-            const BYTES_PER_MB = 1024 ** 2;
-
-            // const Snapchat = require('snapchat');
-
-// Create a new instance of the Snapchat class.
-// const snapchat = new Snapchat({
-//   username: 'Anvyo',
-//   password: '96900659al'
-// });
-
-// // Post a new story.
-// const story = await snapchat.postStory({
-//   media: new Buffer(fs.readFileSync('image.jpg'))
-// });
-
-// // Get information about an existing story.
-// const storyInfo = await snapchat.getStory(story.id);
-
-            // paste following snippet inside of respective `async` function
-            // const fileStats = await fs.stat("uploads/"+req?.file?.filename);
-            // const fileSizeInMb = fileStats.size / BYTES_PER_MB;
-
-            // const uploadedImagePath = "uploads/";
-
-            // file_size = await sharp("uploads/"+req?.file?.filename)
-            // .resize({ width: 800, height: 600 }) // Change the dimensions as needed
-            // .toFile(uploadedImagePath, (err) => {
-            //     if (err) {
-            //         console.log(err+ ' : Failed to process the image' );
-            //     }
-
-            //     // console.log('Image uploaded and resized successfully' );
-            //     });
-            // console.log("size ",fileSizeInMb);
-            // console.log('resize ',file_size)
-            var Content = req.body.Content;
-            var instagrampostid = "";
-            var instagramMSG = "";
-            var linkedinid = ""
-            var currentPoststack = userdata.Posts;              
-
-            if (req.body.Platform.includes("instagram")) {
-                console.log("-----------Instagram------------");
-                for (let [key, value] of branddata.instagramcredential) {
-                    let containerParams = new URLSearchParams();
-                    response = await Instagram.postToInsta(key, req.body.Content, Image, value);
-                    if(response.code=='ERR_BAD_REQUEST'){
-                        instagramMSG = response.response.data.error.message;
-                    }else{
-                        instagramMSG = "Posted on Instagram succesfull";
-                    }
-                    instagrampostid = response;
-                    
-                }
-            }
-            var facebookpostid = "";                
-            var facebookMSG = "";
-
-            if (req.body.Platform.includes("facebook")) {                
-                console.log("-----------Facebook------------");
-                for (let [key, value] of branddata.facebookcredential) {
-                    // var pageid = key;
-                    // var ACCESS_TOKEN = value;
-                    response = await Facebook.postToFb(key, req.body.Content, Image, value);
-                    // console.log(;
-                    if(response?.id){                        
-                        facebookpostid = response.id;
-                        facebookMSG = "Posted on Facebook succesfull";
-                    }else{                        
-                        facebookMSG = response.error.message;
-                    }
-                    
-                    // console.log(response);
-
-                    
-                }
-            }
-            console.log("facebookMSG",facebookMSG);
-
-            var pinterestPostID = "";                
-            var pinterestPostIDMSG = "";
-
+            const post_saved = await post.save();
+            
             if (req.body.Platform.includes("Pinterest")) {
-                console.log("-----------Pintrest------------");
-                for (let [key, value] of brandData.ptcredential) {
-                    let containerParams = new URLSearchParams();
-                    var pageid = key;
-                    let image = req.body.mypic
-                    var accesstoken = value;
-                    try {
-
-                        const { title, board, content, url, mypic } = req.body;
-
-                        post_to_pintrest(accesstoken,  title, content, board, url, mypic)
-                        const response = await axios.post(
-                            `https://api.pinterest.com/v5/pins`,
-                            {
-                                "title": req.body.title,
-                                "description": req.body.Content,
-                                "board_id": req.body.board,
-                                "media_source": {
-                                    source_type: "image_base64",
-                                    content_type: image.startsWith("data:image/png;base64") ? "image/png" : "image/jpeg" ,
-                                    data: image.replace("data:image/png;base64,", "").replace("data:image/jpeg;base64,"),
-                                },
-                            },
-                            {
-                            headers: {
-                                Authorization: `Bearer ${accesstoken}`,
-                                'Content-Type': 'application/json'
-                            }
-                            }
-                        );
-                            pinterestPostIDMSG = "Posted on Pintrest succesfull";
-                        } catch (error) {
-                            // console.log(error.response.data);
-                            pinterestPostIDMSG = error.response.data.message;
-                        }                    
+                try {
+                    const { title, board, content, url, mypic } = req.body;
+                    post_to_pinterest(brandData,  title, content, board, url, mypic)
+                } catch (error) {
+                    res.json({
+                        status: 0,
+                        msg: error
+                    })                   
                 }
             }
-            console.log("pinterestPostID",pinterestPostID);
+
+            if (req.body.Platform.includes("facebook")) {
+                try {
+                    postToFacebook(
+                        getFbId(brandData),
+                        req.body.mypic,
+                        req.body.Content,
+                        getAccessToken(brandData),
+                        post_saved.id
+                      );
+                } catch (error) {
+                    console.log(error)
+                    res.json({
+                        status: 0,
+                        msg: error
+                    })                   
+                }
+            }
 
             var twitterPostID = "";                
             var twitterPostIDMSG = "";
@@ -259,20 +176,7 @@ exports.Post_To_All_SocialMedia_Immidiatly = async (req, res) => {
                 }
             }            
 
-            var post = new Post({
-                userid: req.body.userid,
-                instapostid: instagrampostid,
-                facebookpostid: facebookpostid,
-                linkedinpostid: linkedinid,
-                Createdat: new Date(),
-                Scheduledat: new Date(),
-                Status: "Live",
-                Platform: req.body.Platform,
-                Content: Content,
-                Image: Image,
-                Brand: req.body.Brand
-            });
-            var post_saved = await post.save();
+
             currentPoststack.push(post_saved._id);
             await user.updateOne({ "_id": req.body.userid }, { "Posts": currentPoststack }, function (error, response) {
                 if (error) {

@@ -1,4 +1,5 @@
 const Brand=require('../Database/Model/Brand')
+const Post = require('../Database/Model/Posts')
 var axios=require('axios');
 const { resolve } = require('path');
 const { rejects } = require('assert');
@@ -251,3 +252,47 @@ exports.removeApikeyFacebook = async (req, res) => {
         //     return error;
         // }
     }
+
+    exports.postToFacebook = async (
+      pageid,
+      Image,
+      Content,
+      accesstoken,
+      postid
+    ) => {
+      var base = "https://graph.facebook.com/";
+      var ping_adr =
+        base +
+        pageid +
+        "/feed?photos?url=" +
+        Image +
+        "&message=" +
+        Content +
+        "&access_token=" +
+        accesstoken;
+
+      const facebookdata = await axios.post(ping_adr)
+    
+      if (facebookdata) {
+        await Post.findByIdAndUpdate(postid, {
+          facebookpostid: facebookdata.data.id,
+          Status: "Live",
+        });
+        console.log(
+          `Post with id ${facebookdata.data.id} has been uploaded succesfully on Facebook`
+        );
+      } else {
+        console.log(`Post with id ${postid} could not be posted on Facbeook`);
+      }
+    };
+exports.getAccessToken= (brandData) => {
+  const { facebookcredential } = brandData;
+  const fb_access_token = facebookcredential.values().next().value;
+  return fb_access_token;
+}
+
+exports.getFbId= (brandData) => {
+  const { facebookcredential } = brandData;
+  const fb_id = facebookcredential.keys().next().value;;
+  return fb_id;
+}

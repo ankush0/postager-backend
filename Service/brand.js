@@ -1,6 +1,8 @@
 const Brand = require("../Database/Model/Brand");
 const user = require("../Database/Model/User");
 const User = require("../Database/Model/User");
+
+const { get_boards } = require('../Controllers/Pinterest')
 const axios = require('axios');
 
 module.exports.AddNewBrand = async (req, res) => {
@@ -127,56 +129,6 @@ module.exports.UpdateBrand = async (req, res) => {
         }
 
     } catch (err) {
-        console.log(err);
-        res.json("Internal Servr Error watch logs for more information");
-    }
-}
-
-module.exports.pinterestBrands = async (req, res) => {
-    try {
-        if (req.body.userid && req.body.userid.match(/^[0-9a-fA-F]{24}$/)) {
-
-            // try {
-                var branddata = await Brand.findById(req.body.Brand, function (err, result) {
-
-                    if (err) throw err;
-                })
-                for (let [key, value] of branddata.ptcredential) {
-                    let containerParams = new URLSearchParams();
-                    var pageid = key;
-                    var accesstoken = value;
-                    const response = await axios.get(
-                    `https://api.pinterest.com/v5/boards/`,
-                    {
-                        headers: {
-                        Authorization: `Bearer ${accesstoken}`
-                        }
-                    }
-                    );
-                    console.log(response.data);
-                    res.json({ status: 1, data: response.data.items });
-                    console.log('Boards retrieved successfully!');
-                    // console.log(response.data.items[0].id);
-                    // var board_id = response.data.items[0].id;
-                }
-            // } catch (error) {
-            //     console.error('Error retrieving boards:', error.response.data);
-            // }
-            // Brand.find({
-            //     userid: req.body.userid
-            // }, function (err, result) {
-            //     console.log(result);
-            //     if (!err) {
-            //         res.json({ status: 1, data: result });
-            //     } else {
-            //         res.send("internal server error");
-            //     }
-            // })
-        } else {
-            res.json({ status: 0, msg: "Please enter Valid Credentials" })
-        }
-    }
-    catch (err) {
         console.log(err);
         res.json("Internal Servr Error watch logs for more information");
     }

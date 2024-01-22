@@ -2,6 +2,7 @@ const Brand=require('../Database/Model/Brand')
 var axios=require('axios');
 const { resolve } = require('path');
 const { rejects } = require('assert');
+const { PINTEREST_API_URL } = require('../constants');
 function returnaccestoken(brandid){
 return new Promise((resolve,rejects)=>{
 
@@ -132,20 +133,20 @@ catch(err){
 
     
 }
-exports.ReplyToComment=async(Req,res)=>{
+exports.ReplyToComment=async(Req,res)=>{}
 
-}
-
-exports.post_to_pintrest = async (
-    accessToken,
+exports.post_to_pinterest = async (
+    brandData,
     title,
     content,
     board,
     url,
     image
   ) => {
+    const pinterest_access_token = getAccessToken(brandData);
+
     await axios.post(
-      `https://api.pinterest.com/v5/pins`,
+      PINTEREST_API_URL,
       {
         title: title,
         description: content,
@@ -158,10 +159,31 @@ exports.post_to_pintrest = async (
       },
       {
         headers: {
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: `Bearer ${pinterest_access_token}`,
           "Content-Type": "application/json",
         },
       }
     );
     console.log('Posted to Pinterest Successfully')
-  };
+};
+
+exports.get_boards = async (req, res) => {
+  if (req.body.userid && req.body.userid.match(/^[0-9a-fA-F]{24}$/)) {
+    const brandData = await Brand.findById(req.body.Brand);
+    const pinterest_access_token = getAccessToken(brandData);
+    const response = await axios.get(`https://api.pinterest.com/v5/boards/`, {
+      headers: {
+        Authorization: `Bearer ${pinterest_access_token}`,
+      },
+    });
+    res.json({ status: 1, data: response.data.items });
+  } else {
+    res.json({ status: 0, msg: "Please enter Valid Credentials" });
+  }
+};
+
+function getAccessToken(brandData) {
+    const { ptcredential } = brandData;
+    const pinterest_access_token = ptcredential.values().next().value;
+    return pinterest_access_token;
+}

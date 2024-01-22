@@ -1,0 +1,1 @@
+exports.PINTEREST_API_URL = `https://api.pinterest.com/v5/pins`;
