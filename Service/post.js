@@ -19,9 +19,29 @@ const Facebook = require("../Controllers/Facebook");
 // constructor function to create a storage directory inside our project for all our localStorage setItem.
 var localStorage = new LocalStorage('./Localstorage');
 
+const posttoFacebookScheduled = async (pageid, Image, Content, accesstoken, postid) => {
+    var base = 'https://graph.facebook.com/'
+    var ping_adr = base + pageid + '/feed?photos?url=' + Image + '&message=' + Content + '&access_token=' + accesstoken;
+    const facebookdata = await axios.post(ping_adr)
+        .catch((err) => {
+            localStorage.setItem("Facebook" + postid, err)
+            console.error(err)
+        })
+
+    if (facebookdata) {
+        await Post.findByIdAndUpdate(postid, { "facebookpostid": facebookdata.data.id, "Status": "Live" }, function (error, response) {
+            if (!error) {
+                console.log(response);
+            }
+        });
+        localStorage.removeItem("Facebook" + postid);
+        console.log(`Post with id ${postid} has been uploaded succesfully on Facebook`);
+    }
+    else {
+        console.log(`Post with id ${postid} could not be posted on Facbeook`);
+    }
+}
 exports.Post_To_All_SocialMedia_Immidiatly = async (req, res) => {
-    //    var date=new Date('2011-04-11T10:20:30Z')
-    // console.log(req.body);
     try {
 
         var errorstaus = false;
@@ -29,17 +49,11 @@ exports.Post_To_All_SocialMedia_Immidiatly = async (req, res) => {
         const errors = [];
           
         if (req.body.Platform && req.body.userid.match(/^[0-9a-fA-F]{24}$/) && req.body.Content && req.body.Brand && req.body.Brand.match(/^[0-9a-fA-F]{24}$/)) {
-            // console.log(req.file);
-            var userdata = await user.findById(req.body.userid, function (err, result) {
 
-                if (err) throw err;
-            })
-            var branddata = await Brand.findById(req.body.Brand, function (err, result) {
+            const userdata = await user.findById(req.body.userid)
 
-                if (err) throw err;
-            })        
-            // var Image =  process.env.IMG_URL + req?.file?.filename;
-            // var Image =  'https://8bittask.com/june/WhatsApp05.mp4';
+            const brandData = await Brand.findById(req.body.Brand);
+            
             var Image = "https://8bittask.com/june/pinterest.png";
             const fs = require('fs').promises;
             const sharp = require('sharp');
@@ -216,95 +230,50 @@ exports.Post_To_All_SocialMedia_Immidiatly = async (req, res) => {
                 }
             }
 
-            if (req.body.Platform.includes("Linkedin")) {
-                console.log("-----------Linkedin------------");
-                for (let [key, value] of branddata.linkdinCredential) {
-                    console.log(value);
-                    let containerParams = new URLSearchParams();
-                    var pageid = key;
-                    var accessToken = value;
-                    try {
-                        const response = await axios.get('https://api.linkedin.com/v2/organizations', {
-                            headers: {
-                                'Authorization': `Bearer ${accessToken}`
-                            }
-                        });
-                
-                        const organizationId = response.data.elements[0].id; // Assuming you want the first organization's ID
-                        res.send(`Organization ID: ${organizationId}`);
-                    } catch (error) {
-                        console.error(error);
-                        res.status(500).send('Error fetching organization ID');
-                    }
-                    
-//   const postUrl = 'https://api.linkedin.com/v2/me';
-                      
-//   const headers = {
-//     'Authorization': `Bearer ${accessToken}`,
-//     'Content-Type': 'application/json',
-//   };
 
-  
-//   try {
-//     const response = await axios.get(postUrl, { headers });
-//     console.log('Posted to LinkedIn:', response.data);
-//   } catch (error) {
-//     console.error(error);
-//   }
+            if (req.body.Platform.includes("Linkedin")) { 
 
-//   Posted to LinkedIn: {
-//     localizedLastName: 'A',
-//     profilePicture: { displayImage: 'urn:li:digitalmediaAsset:C4D03AQGrcjPfsctuTw' },
-//     firstName: {
-//       localized: { en_US: 'Hero' },
-//       preferredLocale: { country: 'US', language: 'en' }
-//     },
-//     vanityName: 'hero-a-b865391ba',
-//     lastName: {
-//       localized: { en_US: 'A' },
-//       preferredLocale: { country: 'US', language: 'en' }
-//     },
-//     localizedHeadline: 'PHP Developer at SSAK Solution Services - India',
-//     id: 'EUabXZ8XKN',
-//     headline: {
-//       localized: { en_US: 'PHP Developer at SSAK Solution Services - India' },
-//       preferredLocale: { country: 'US', language: 'en' }
-//     },
-//     localizedFirstName: 'Hero'
-//   }
-// const postContent = {
-                    //     author: 'urn:li:person:EUabXZ8XKN', // Your LinkedIn member ID
-                    //     lifecycleState: 'PUBLISHED',
-                    //     specificContent: {
-                    //       'com.linkedin.ugc.ShareContent': {
-                    //         shareCommentary: {
-                    //           text: req.body.Content,
-                    //         },
-                    //         shareMediaCategory: 'NONE',
-                    //       },
-                    //     },
-                    //     visibility: {
-                    //       'com.linkedin.ugc.MemberNetworkVisibility': 'CONNECTIONS',
-                    //     },
-                    //   };
-                      
-                    //   const postUrl = 'https://api.linkedin.com/v2/me';
-                      
-                    //   const headers = {
-                    //     'Authorization': `Bearer ${accessToken}`,
-                    //     'Content-Type': 'application/json',
-                    //   };
+                const { linkdinCredential } = brandData;
 
-                      
-                    //   try {
-                    //     const response = await axios.get(postUrl, { headers });
-                    //     console.log('Posted to LinkedIn:', response.data);
-                    //   } catch (error) {
-                    //     console.error(error);
-                    //   }
-                      
+                const linkedIn_access_token = linkdinCredential.values().next().value;
+
+                try {
+                    console.log(`Organization`)
+                    const organizationResponse = await axios.get(`https://api.linkedin.com/v2/companySearch?q=search&query=postager`,{
+                        headers: {
+                            'Authorization': `Bearer ${linkedIn_access_token}`
+                        }
+                    })
+                    console.log(`Organization Data: ${organizationResponse.data}`)
+                    // const profileResponse = await axios.get(`https://api.linkedin.com/v2/me`, {
+                    //     headers: {
+                    //         'Authorization': `Bearer ${linkedIn_access_token}`
+                    //     }
+                    // })
+                    // console.log(`Profile ID: ${profileResponse.data?.id}`)
+                    const postResponse = await axios("https://api.linkedin.com/rest/posts", {
+                        method: "POST",
+                        headers: {
+                            'LinkedIn-Version': '202306',
+                            'X-Restli-Protocol-Version': '2.0.0',
+                            'Authorization': 'Bearer ' + linkedIn_access_token
+                        },
+                        data: JSON.stringify({
+                            "author": `urn:li:person:${profileResponse.data?.id}`,
+                            "commentary": req.body.Content,
+                            "visibility": "PUBLIC",
+                            "distribution": {
+                                "feedDistribution": "MAIN_FEED",
+                                "targetEntities": [],
+                                "thirdPartyDistributionChannels": []
+                            },
+                            "lifecycleState": "PUBLISHED",
+                        })
+                    })
+                } catch (error) {
+                    res.status(500).send(error);
                 }
-            }
+            }            
 
             var post = new Post({
                 userid: req.body.userid,
@@ -346,136 +315,37 @@ exports.Post_To_All_SocialMedia_Immidiatly = async (req, res) => {
 exports.Post_To_All_SocialMedia_Scheduling = async (req, res) => {
     if (req.body.Platform && req.body.Date && req.body.userid.match(/^[0-9a-fA-F]{24}$/) && req.body.Content && req.body.Brand) {
 
-        var userdata = await user.findById(req.body.userid, function (err, result) {
-
-            if (err) {
-                console.log(err);
+        try {
+            var userdata = await user.findById(req.body.userid)
+            if(!userdata) {
                 res.json({
                     status: 0,
                     msg: "check your Credentials or internal server error"
-
                 })
-
-
+            }
+            if (req.body.Platform.includes("Facebook")) {
+                localStorage.setItem("Facebook" + postsave._id, "Facebook Post Scheduled at " + date + "current timing" + new Date());
+                schedule.scheduleJob(date, async function () {
+                    posttoFacebookScheduled(userdata.facebookid, Image, Content, userdata.facebooktoken, postsave._id)
+                })
             }
 
-        })
+        } catch(error) {
+            res.json({
+                status: 500,
+                msg: error
+            })
+        }
 
 
-
-        // console.log(userdata);
-        // if (userdata) {
-
-        //     if (userdata.facebookid && userdata.facebooktoken && userdata.Instagramid && userdata.Instagramtoken) {
-                // console.log(photopath);
-
-                // var Instagramid=req.body.Instagramid;
-                var Content = req.body.Content;
-
-
-
-                var currentPoststack = userdata.Posts;
-
-                var Content = req.body.Content;
-                var Image = 'http://localhost:4000/images/';
-
-                var base = 'https://graph.facebook.com/'
-
-                var post = new Post({
-
-                    userid: req.body.userid,
-                    instapostid: "",
-                    facebookpostid: "",
-                    Createdat: req.body.Date,
-                    Scheduledat: Date(),
-                    Status: "Scheduled",
-                    Platform: req.body.Platform,
-                    Brand: req.body.Brand
-
-
-                });
-
-                var postsave = await post.save();
-
-                // currentPoststack.push(postsave._id);
-                // console.log(req.body.userid);
-
-                // await user.findByIdAndUpdate(req.body.userid, { "Posts": currentPoststack }, function (err, docs) {
-
-                //     if (err) {
-                //         console.log(err)
-                //     }
-                //     else {
-                //         console.log("User Post has been  Updated");
-                //     }
-
-                // });
-
-                // const date = new Date(req.body.Date).toJSON();
-
-
-
-                // if (req.body.Platform.includes("Facebook")) {
-                //     localStorage.setItem("Facebook" + postsave._id, "Facebook Post Scheduled at " + date + "current timing" + new Date());
-                //     schedule.scheduleJob(date, async function () {
-                //         console.log("Facebook executing function has been called")
-
-                //         posttoFacebookScheduled(userdata.facebookid, Image, Content, userdata.facebooktoken, postsave._id)
-
-
-                //     })
-                // }
-
-                // if (req.body.Platform.includes("Instagram")) {
-
-
-                //     localStorage.setItem("Instagram" + postsave._id, "Instagram Post Scheduled at " + date + "current timing" + new Date());
-                //     const job = schedule.scheduleJob(date, function (y) {
-
-                //         console.log("Instagram Scheduled function is Executing now");
-                //         postToInstaScheduled(userdata.Instagramid, Content, Image, userdata.Instagramtoken, postsave._id);
-
-                //     });
-                // }
-
-
-
-
-                res.json({
-                    code: 1,
-                    msg: "post has been Scheduled  succesfully"
-                });
-
-
-        //     }
-        //     else {
-        //         res.json({
-        //             status: 0,
-        //             msg: "you have not saved valid Credential saved in database"
-
-        //         })
-
-        //     }
-
-        // }
-        // else {
-
-        //     res.json({
-        //         status: 0,
-        //         msg: "check your Credential User does not exist"
-
-        //     })
-
-        // }
-
-
-
+        res.json({
+            code: 1,
+            msg: "Post has been Scheduled succesfully"
+        });
 
     }
     else {
-
         res.json({
-
             status: 0,
             msg: "Send All Necessary and valid Details"
         })
