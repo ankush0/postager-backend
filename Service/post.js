@@ -15,32 +15,11 @@ var upload = serverfile.upload
 const Linekedin = require("../Controllers/LinkedIn");
 const Instagram = require("../Controllers/Instagram");
 const Facebook = require("../Controllers/Facebook");
+const { post_to_pintrest } = require("../Controllers/Pinterest");
 
 // constructor function to create a storage directory inside our project for all our localStorage setItem.
 var localStorage = new LocalStorage('./Localstorage');
 
-const posttoFacebookScheduled = async (pageid, Image, Content, accesstoken, postid) => {
-    var base = 'https://graph.facebook.com/'
-    var ping_adr = base + pageid + '/feed?photos?url=' + Image + '&message=' + Content + '&access_token=' + accesstoken;
-    const facebookdata = await axios.post(ping_adr)
-        .catch((err) => {
-            localStorage.setItem("Facebook" + postid, err)
-            console.error(err)
-        })
-
-    if (facebookdata) {
-        await Post.findByIdAndUpdate(postid, { "facebookpostid": facebookdata.data.id, "Status": "Live" }, function (error, response) {
-            if (!error) {
-                console.log(response);
-            }
-        });
-        localStorage.removeItem("Facebook" + postid);
-        console.log(`Post with id ${postid} has been uploaded succesfully on Facebook`);
-    }
-    else {
-        console.log(`Post with id ${postid} could not be posted on Facbeook`);
-    }
-}
 exports.Post_To_All_SocialMedia_Immidiatly = async (req, res) => {
     try {
 
@@ -141,11 +120,16 @@ exports.Post_To_All_SocialMedia_Immidiatly = async (req, res) => {
 
             if (req.body.Platform.includes("Pinterest")) {
                 console.log("-----------Pintrest------------");
-                for (let [key, value] of branddata.ptcredential) {
+                for (let [key, value] of brandData.ptcredential) {
                     let containerParams = new URLSearchParams();
                     var pageid = key;
+                    let image = req.body.mypic
                     var accesstoken = value;
                     try {
+
+                        const { title, board, content, url, mypic } = req.body;
+
+                        post_to_pintrest(accesstoken,  title, content, board, url, mypic)
                         const response = await axios.post(
                             `https://api.pinterest.com/v5/pins`,
                             {
@@ -153,10 +137,10 @@ exports.Post_To_All_SocialMedia_Immidiatly = async (req, res) => {
                                 "description": req.body.Content,
                                 "board_id": req.body.board,
                                 "media_source": {
-                                "source_type": "image_url",
-                                "url": Image,
-                                "link": req.body.url,
-                                }
+                                    source_type: "image_base64",
+                                    content_type: image.startsWith("data:image/png;base64") ? "image/png" : "image/jpeg" ,
+                                    data: image.replace("data:image/png;base64,", "").replace("data:image/jpeg;base64,"),
+                                },
                             },
                             {
                             headers: {
@@ -295,7 +279,7 @@ exports.Post_To_All_SocialMedia_Immidiatly = async (req, res) => {
                     console.log(error);
                 }
             });
-            res.json({ msg: instagramMSG+","+facebookMSG+","+pinterestPostIDMSG+","+twitterPostIDMSG, status: 1 });
+            res.json({ msg: `Posted successfully to ${req.body.Platform.join(',')}`, status: 1 });
             
         }
         else {
@@ -313,10 +297,23 @@ exports.Post_To_All_SocialMedia_Immidiatly = async (req, res) => {
     }
 }
 exports.Post_To_All_SocialMedia_Scheduling = async (req, res) => {
+    console.log("Here")
     if (req.body.Platform && req.body.Date && req.body.userid.match(/^[0-9a-fA-F]{24}$/) && req.body.Content && req.body.Brand) {
-
         try {
             var userdata = await user.findById(req.body.userid)
+            console.log("Platforms", req.body.Platform);
+
+            var post = new Post({
+                userid: req.body.userid,
+                Createdat: new Date(),
+                Scheduledat: new Date(),
+                Status: "Live",
+                Platform: req.body.Platform,
+                Content: Content,
+                Image: Image,
+                Brand: req.body.Brand
+            });
+            var post_saved = await post.save();
             if(!userdata) {
                 res.json({
                     status: 0,
@@ -324,9 +321,26 @@ exports.Post_To_All_SocialMedia_Scheduling = async (req, res) => {
                 })
             }
             if (req.body.Platform.includes("Facebook")) {
-                localStorage.setItem("Facebook" + postsave._id, "Facebook Post Scheduled at " + date + "current timing" + new Date());
-                schedule.scheduleJob(date, async function () {
-                    posttoFacebookScheduled(userdata.facebookid, Image, Content, userdata.facebooktoken, postsave._id)
+
+                localStorage.setItem("Facebook " + post_saved._id, "Post Scheduled at " + date + "current timing" + new Date());
+                schedule.scheduleJob(req.body.Date, async function () {
+                    posttoFacebookScheduled(userdata.facebookid, Image, Content, userdata.facebooktoken, post_saved._id)
+                })
+            }
+
+            if (req.body.Platform.includes("Pinterest")) {
+
+
+                const { ptcredential } = brandData;
+
+                const pinterest_access_token = ptcredential.values().next().value;
+
+                const { title, board, content, url } = req.body;
+
+                localStorage.setItem("Pintrest" + post_saved._id, " Post Scheduled at " + date + "current timing" + new Date());
+                
+                schedule.scheduleJob(req.body.Date, async function () {
+                    schedule_pinterest_post(pinterest_access_token, title, content, board, url)
                 })
             }
 

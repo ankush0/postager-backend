@@ -135,3 +135,33 @@ catch(err){
 exports.ReplyToComment=async(Req,res)=>{
 
 }
+
+exports.post_to_pintrest = async (
+    accessToken,
+    title,
+    content,
+    board,
+    url,
+    image
+  ) => {
+    await axios.post(
+      `https://api.pinterest.com/v5/pins`,
+      {
+        title: title,
+        description: content,
+        board_id: board,
+        media_source: {
+          source_type: "image_base64",
+          content_type: image.startsWith("data:image/png;base64") ? "image/png" : "image/jpeg" ,
+          data: image.replace("data:image/png;base64,", "").replace("data:image/jpeg;base64,"),
+        },
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    console.log('Posted to Pinterest Successfully')
+  };
