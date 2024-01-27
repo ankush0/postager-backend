@@ -4,10 +4,6 @@ const crypto = require("crypto");
 const Brandschema = new mong.Schema({
 
     userid: String,
-    // plan: {
-    //     type: [],
-    //     default: 1,
-    // },
     planId: {
         type: String,
         required: true,
@@ -34,12 +30,6 @@ const Brandschema = new mong.Schema({
         default: '1-1-2040',
     },
     security_key: String,
-    // tokens: [{
-    //     token: {
-    //         type: String,
-    //         required: true
-    //     }
-    // }]
     name: String,
     facebookcredential: {
         type: Map,

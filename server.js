@@ -45,12 +45,11 @@ app.use('/images', express.static('uploads'));
 
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
-
         // Uploads is the Upload_folder_name
         cb(null, "uploads")
     },
     filename: function (req, file, cb) {
-        cb(null, file.fieldname + "-" + Date.now() + ".jpg")
+        cb(null, file.originalname)
     }
 })
 
@@ -66,7 +65,6 @@ var upload = multer({
         var mimetype = filetypes.test(file.mimetype);
 
         var extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-
         if (mimetype && extname) {
             return cb(null, true);
         }

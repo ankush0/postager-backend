@@ -67,7 +67,6 @@ exports.Post_To_All_SocialMedia_Immidiatly = async (req, res) => {
                         post_saved.id
                       );
                 } catch (error) {
-                    console.log(error)
                     res.json({
                         status: 0,
                         msg: error
@@ -201,11 +200,9 @@ exports.Post_To_All_SocialMedia_Immidiatly = async (req, res) => {
     }
 }
 exports.Post_To_All_SocialMedia_Scheduling = async (req, res) => {
-    console.log("Here")
     if (req.body.Platform && req.body.Date && req.body.userid.match(/^[0-9a-fA-F]{24}$/) && req.body.Content && req.body.Brand) {
         try {
             var userdata = await user.findById(req.body.userid)
-            console.log("Platforms", req.body.Platform);
 
             var post = new Post({
                 userid: req.body.userid,
@@ -234,17 +231,12 @@ exports.Post_To_All_SocialMedia_Scheduling = async (req, res) => {
 
             if (req.body.Platform.includes("Pinterest")) {
 
-
-                const { ptcredential } = brandData;
-
-                const pinterest_access_token = ptcredential.values().next().value;
-
                 const { title, board, content, url } = req.body;
 
-                localStorage.setItem("Pintrest" + post_saved._id, " Post Scheduled at " + date + "current timing" + new Date());
+                localStorage.setItem("Pinterest" + post_saved._id, " Post Scheduled at " + date + "current timing" + new Date());
                 
                 schedule.scheduleJob(req.body.Date, async function () {
-                    schedule_pinterest_post(pinterest_access_token, title, content, board, url)
+                    post_to_pinterest(brandData, title, content, board, url)
                 })
             }
 

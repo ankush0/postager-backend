@@ -1359,7 +1359,7 @@ exports.Show_All_Post = async (req, res) => {
             Scheduledat : { $lt: currentTime, $gte: previousTime },
             userid: req.body.userid,
             Brand: req.body.brandId
-        });
+        }).limit(20);
 
         // Fetch data from the secondArray collection for today
         const secondArrayData = await Post.find({

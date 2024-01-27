@@ -1,21 +1,10 @@
 const Brand=require('../Database/Model/Brand')
-var axios=require('axios');
-const { resolve } = require('path');
-const { rejects } = require('assert');
+const axios=require('axios');
+const fs = require('fs')
+const path = require('path');
+
 const { PINTEREST_API_URL } = require('../constants');
-function returnaccestoken(brandid){
-return new Promise((resolve,rejects)=>{
 
-user.findById(req.body.userid,function(err,result){
-resolve(result)
-rejects(err);
-})
-
-    
-})
-
-
-}
 
 exports.AddApikeysandTokenPintrest = async (req, res) => {
 try{
@@ -23,7 +12,6 @@ try{
 
         let map = new Map();
         map.set(req.body.Ptid,req.body.oauth_token);
-        console.log(map);
   
        Brand.updateOne({
             "_id": req.body._id
@@ -73,7 +61,6 @@ exports.removeApikeyPintrest = async (req, res) => {
                 'ptcredential':"",
                 'ptpicture':""
             }, function (error, response) {
-                console.log(response);
                 if (error) {
                     console.log(error);
                     res.json({status: 0, msg: "Internal Server Error check your credentials"})
@@ -102,38 +89,6 @@ exports.removeApikeyPintrest = async (req, res) => {
     
     }
     }
-
-
-exports.Getallcomments=async(req,res)=>{
-    
-var access_token=req.body.access_token;
-var postid=req.body.postid;
-var getallcommenturl= `https://graph.facebook.com/v3.2/${postid}/comments?access_token=${access_token}`
-try{
-
-    const commentdata=await axios.get(getallcommenturl);
-    console.log(commentdata)
-    res.json({
-     'status':1,
-     'msg':commentdata.data.data
-
-    })
-
-
-
-}
-catch(err){
-
-     console.log(err);
-    res.json({"msg":0,'msg':"Internal Server Error"})
-
-}
-
-
-
-    
-}
-exports.ReplyToComment=async(Req,res)=>{}
 
 exports.post_to_pinterest = async (
     brandData,
@@ -166,6 +121,63 @@ exports.post_to_pinterest = async (
     );
     console.log('Posted to Pinterest Successfully')
 };
+
+exports.media_upload = async (brandData, fileName, pinData) => {
+    const pinterest_access_token = getAccessToken(brandData);
+
+    const { data } = await axios.post(
+      "https://api.pinterest.com/v5/media",
+      {
+        media_type: "video",
+      },
+      {
+        headers: {
+           Authorization: `Bearer ${pinterest_access_token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    const jsonPath = path.join(__dirname, '..', 'uploads', fileName);
+    const uploadMetadata = new FormData();
+    uploadMetadata.append('x-amz-date', data.upload_parameters['x-amz-date']);
+    uploadMetadata.append('x-amz-signature', data.upload_parameters['x-amz-signature']);
+    uploadMetadata.append('x-amz-security-token', data.upload_parameters['x-amz-security-token']);
+    uploadMetadata.append('x-amz-algorithm', data.upload_parameters['x-amz-algorithm']);
+    uploadMetadata.append('key', data.upload_parameters['key']);
+    uploadMetadata.append('policy', data.upload_parameters['policy']);
+    uploadMetadata.append('x-amz-credential', data.upload_parameters['x-amz-credential']);
+    uploadMetadata.append('Content-Type', 'multipart/form-data');
+    uploadMetadata.append('file', fs.readFileSync(jsonPath, 'utf-8'))
+
+    const upload = await axios.post('https://pinterest-media-upload.s3-accelerate.amazonaws.com/', uploadMetadata)
+
+    const uploadStatus = await axios.get(`https://api.pinterest.com/v5/media/${data['media_id']}`, {
+        headers: {
+            Authorization: `Bearer ${pinterest_access_token}`
+        }
+    })
+
+    await axios.post(
+        PINTEREST_API_URL,
+        {
+            title: pinData.title,
+            description: pinData.content,
+            board_id: pinData.board,
+            media_source: {
+                "source_type": "video_id",
+                "cover_image_url": "https://picsum.photos/id/1/200/300",
+                "media_id": uploadStatus.data["media_id"]
+            },
+        },
+        {
+            headers: {
+                Authorization: `Bearer ${pinterest_access_token}`,
+                "Content-Type": "application/json",
+            },
+        }
+        );
+}
 
 exports.get_boards = async (req, res) => {
   if (req.body.userid && req.body.userid.match(/^[0-9a-fA-F]{24}$/)) {

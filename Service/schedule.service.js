@@ -66,6 +66,8 @@ exports.Post_To_All_SocialMedia_Scheduling_Post = async (req, res) => {
             post_saved._id
           );
         });
+
+        console.log(`Facebook Post with Id: ${post_saved.id} scheduled for ${req.body.Date}`);
       }
 
       if (req.body.Platform.includes("Pinterest")) {
@@ -83,14 +85,8 @@ exports.Post_To_All_SocialMedia_Scheduling_Post = async (req, res) => {
         });
 
         console.log(`Pinterest Post with Id: ${post_saved.id} scheduled for ${req.body.Date}`);
-
-        localStorage.setItem(
-          "Pinterest",
-          "Post Scheduled at " + req.body.Date + "current timing" + new Date()
-        );
       }
     } catch (error) {
-      console.log(error);
       res.json({
         status: 500,
         msg: error,
