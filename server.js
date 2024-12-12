@@ -75,28 +75,28 @@ var upload = multer({
   },
 }).single("mypic");
 
-app.post("/inviteTeam", async (req, res) => {
-  const inviteLink = `http://localhost:3000/invite?token=${req.body.brandId} ${req.body.email}`;
-  console.log("req.body", req.body,inviteLink);
-  mg.messages.create('sandboxf79d6ff37fac43dc9891e635ff0e4685.mailgun.org', {
-  	from: "Postager <mailgun@sandboxf79d6ff37fac43dc9891e635ff0e4685.mailgun.org>",
-  	to: [req.body.email],
-  	subject: "Invitation Link",
-  	text: "Testing some Mailgun awesomeness!",
-  	html: `
-     <p> Invitation to join their app!</p>
-      <p>
-        <a href="${inviteLink}" 
-           style="background-color: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
-           Accept Invite
-        </a>
-      </p>
-    `,
-  })
-  .then(msg => console.log("mail message",msg)) // logs response data
-  .catch(err => console.log(err)); // logs any error
+// app.post("/inviteTeam", async (req, res) => {
+//   const inviteLink = `http://localhost:3000/invite?token=${req.body.brandId} ${req.body.email}`;
+//   console.log("req.body", req.body,inviteLink);
+//   mg.messages.create('sandboxf79d6ff37fac43dc9891e635ff0e4685.mailgun.org', {
+//   	from: "Postager <mailgun@sandboxf79d6ff37fac43dc9891e635ff0e4685.mailgun.org>",
+//   	to: [req.body.email],
+//   	subject: "Invitation Link",
+//   	text: "Testing some Mailgun awesomeness!",
+//   	html: `
+//      <p> Invitation to join their app!</p>
+//       <p>
+//         <a href="${inviteLink}" 
+//            style="background-color: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
+//            Accept Invite
+//         </a>
+//       </p>
+//     `,
+//   })
+//   .then(msg => console.log("mail message",msg)) // logs response data
+//   .catch(err => console.log(err)); // logs any error
  
-});
+// });
 app.post("/updateTeam", async (req, res) => {
   console.log("req.body", req.body.data.split(" ")[1]);
   const invitedUserEmail=req.body.data.split(" ")[1]
