@@ -1,9 +1,6 @@
-const Brand = require("../Database/Model/Brand");
-const user = require("../Database/Model/User");
-const User = require("../Database/Model/User");
-const Plans = require("../Database/Model/Plans");
+
 const express = require("express");
-const app = express();
+
 
 module.exports.GenerateKey = async (req, res) => {
     // Image userid name

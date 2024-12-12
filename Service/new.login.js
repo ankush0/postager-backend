@@ -1,8 +1,6 @@
-const Brand = require("../Database/Model/Brand");
-const user = require("../Database/Model/User");
-const User = require("../Database/Model/User");
-const Plans = require("../Database/Model/Plans");
-
+const Plans = require('../Database/Connection')
+const Brand = require('../Database/Connection');
+var user=require("../Database/Connection");
 module.exports.AddNewBrand = async (req, res) => {
     // Image userid name
     try {

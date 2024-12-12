@@ -1,15 +1,17 @@
-const Brand = require("../Database/Model/Brand");
-const user = require("../Database/Model/User");
-const User = require("../Database/Model/User");
+const {Brands} = require('../Database/Connection');
+const Brand=Brands
+const user = require('../Database/Connection').user;
 
 const { get_boards } = require('../Controllers/Pinterest')
 const axios = require('axios');
 
 module.exports.AddNewBrand = async (req, res) => {
+    console.log("req.body",req.body.mypic);
+  
     // Image userid name
     try {
         if (req.body.name && req.body.userid && req.body.userid.match(/^[0-9a-fA-F]{24}$/)) {
-            var Image =  process.env.IMG_URL + req.file.filename;
+         
             var name = req.body.name;
             var userid = req.body.userid;
             var newbrand = new Brand({
@@ -23,7 +25,7 @@ module.exports.AddNewBrand = async (req, res) => {
                 twittertoken: "",
                 linkedinid: "",
                 linkedintoken: "",
-                image: Image,
+                image: req.body.mypic,
                 instagramcredential: []
 
             });
@@ -33,7 +35,7 @@ module.exports.AddNewBrand = async (req, res) => {
 
 
             if (data) {
-                var resultofupdate = await user.updateOne({ "_id": req.body._id }, { $push: { "Brands": data._id } });
+                var resultofupdate = await user.updateOne({ "_id": req.body.userid }, { $push: { "Brands": data._id } });
 
                 res.json({ status: 1, mag: "Saved Succesfully" })
 
@@ -54,17 +56,36 @@ module.exports.AddNewBrand = async (req, res) => {
 };
 
 module.exports.ShowAllBrands = async (req, res) => {
+    console.log("brands req",req.body);
     try {
         if (req.body.userid && req.body.userid.match(/^[0-9a-fA-F]{24}$/)) {
+            const InvitedBrandsData=[]
+            const userRes= await user.find({_id:req.body.userid});
+            console.log("userRes",userRes);
+            if(userRes[0].invitedBy.length>0){
+for(let i=0;i<userRes.invitedBy.length;i++){
+    const brandData= await Brand.find({_id:userRes.invitedBy[i]});
+    InvitedBrandsData.push(brandData[0]);
+}
+            }
+
             Brand.find({
                 userid: req.body.userid
-            }, function (err, result) {
-                if (!err) {
-                    res.json({ status: 1, data: result });
-                } else {
-                    res.send("internal server error");
-                }
-            })
+            }
+        ).then( async (data) => {    
+            console.log("data",data);
+
+         data.map((item)=>{
+                InvitedBrandsData.push(item);
+            }
+            )
+                    res.json({ status: 1, data: InvitedBrandsData });
+
+        }).catch((err) => {
+           console.log(err);
+                res.send("internal server error");
+        
+        });
         } else {
             res.json({ status: 0, msg: "Please enter Valid Credentials" })
         }

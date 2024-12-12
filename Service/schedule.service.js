@@ -1,24 +1,13 @@
-var user = require("../Database/Model/User");
-var Post = require("../Database/Model/Posts");
-var Brand = require("../Database/Model/Brand");
-var Plans = require("../Database/Model/Plans");
-var jwt = require("jsonwebtoken");
-const axios = require("axios");
-const { IgApiClient } = require("instagram-private-api");
-const { get } = require("request-promise");
-const CronJob = require("cron").CronJob;
+var user=require("../Database/Connection");
+var Post = require("../Database/Connection")
+const Brand = require('../Database/Connection');
+
 const schedule = require("node-schedule");
-const Transporter = require("../Mail/Transporter");
+
 var { LocalStorage } = require("node-localstorage");
-const serverfile = require("../server.js");
-var upload = serverfile.upload;
-const Linekedin = require("../Controllers/LinkedIn");
-const Instagram = require("../Controllers/Instagram");
+
 const { post_to_pinterest } = require("../Controllers/Pinterest");
 const { getAccessToken, getFbId, postToFacebook } = require("../Controllers/Facebook.js");
-
-// constructor function to create a storage directory inside our project for all our localStorage setItem.
-var localStorage = new LocalStorage("./Localstorage");
 
 
 

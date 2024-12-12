@@ -1,15 +1,13 @@
-var user = require('../Database/Model/User');
-var Post = require('../Database/Model/Posts');
-var Brand = require('../Database/Model/Brand');
+var user=require("../Database/Connection");
+var Post = require("../Database/Connection")
+const Brand = require('../Database/Connection');
 
 const path = require('path')
-var { LocalStorage } = require('node-localstorage');
-const Instagram = require("../Controllers/Instagram");
+
 const { postReelsToFacebook, getAccessToken, getFbId } = require("../Controllers/Facebook");
 const { media_upload: media_upload_confirmation } = require('../Controllers/Pinterest.js');
 
-// constructor function to create a storage directory inside our project for all our localStorage setItem.
-var localStorage = new LocalStorage('./Localstorage');
+
 
 
 exports.Reels_To_All_SocialMedia_Immediatly = async (req, res) => {
